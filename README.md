@@ -10,6 +10,27 @@ since the original project folder was lost.
   `BeStiff/Content/`: the original compiled `.xnb` assets are used as-is,
   while shaders (`Effects/*.fx`) and music (`Audio/Music/*.ogg`) are rebuilt
   through the MonoGame content pipeline (`Content.mgcb`).
+  Game code is grouped by area, one namespace per folder
+  (`Be_Stiff.<Folder>`, imported project-wide in `GlobalUsings.cs`):
+  - root – `Program`, `Game1`, `Globals` (options and save games),
+    `GameSettings`, `DebugKeys`, `CaseInsensitiveContentManager`
+  - `AI/` – enemy brains and their states, squads, path finding
+  - `Audio/` – music/sound manager, noise events heard by enemies
+  - `Characters/` – `Human`, `Hero`, enemies; `Characters/States/` holds
+    the hero state machine
+  - `Graphics/` – sprites, camera, particles, tiles, HUD;
+    `Graphics/Backgrounds/` the parallax layers
+  - `Input/` – keyboard/gamepad controls
+  - `Levels/` – level loading, zones, portals, score, and
+    `GameElementsControl` (the per-level world, split into partial files:
+    core, `.Content`, `.Rendering`, `.Debug`)
+  - `Physics/` – Farseer helpers: ray casts, contact handling, unit
+    conversion, collision filters
+  - `Screens/` – screen manager and all menus/screens
+  - `Utils/` – small math, vector and string helpers
+  - `Weapons/`, `Weapons/Projectiles/`
+  - `WorldObjects/` – base classes and interfaces; `Props/`, `Goals/`,
+    `Pickups/` for the concrete level objects
 - `Libs/` – the third-party XNA libraries the game depends on, recompiled
   against MonoGame: Farseer Physics, DebugViewXNA, OgmoXNA, SKAnimation,
   Krypton, ProjectMercury. `EasyStorage` is a rewrite on plain file IO
@@ -36,7 +57,7 @@ One-time setup (already done on this machine):
 Then:
 
 ```
-cd MonoGame
+# from the repository root
 export MGFXC_WINE_PATH=$HOME/.winemonogame
 dotnet build BeStiff
 dotnet run --project BeStiff
@@ -51,10 +72,30 @@ BESTIFF_LEVEL=Tutorial1 dotnet run --project BeStiff
 
 Available levels: `Tutorial1`, `Tutorial2`, `TestLevel`.
 
-Other debug switches: `F12` in game saves `~/bestiff_shotN.png` plus the
-intermediate render targets; `BESTIFF_SHOT=<png>` / `BESTIFF_SHOT_FRAME=<n>`
-do the same unattended; `BESTIFF_DUMP=1` prints level, bone and physics
-diagnostics; `BESTIFF_HERO_POS=x,y` teleports the hero after load.
+`F12` in game saves `~/bestiff_shotN.png` plus the intermediate render
+targets (`~/bestiff_shotN_*.png`) and prints the hero's state.
+
+Debug switches (environment variables; "set" means any value):
+
+| Variable | Effect |
+|---|---|
+| `BESTIFF_LEVEL=<name>` | Skip the menus, load that level, auto-confirm the "get ready" box |
+| `BESTIFF_HERO_POS=x,y` | Teleport the hero to display (pixel) coordinates after the level loads |
+| `BESTIFF_KEYS=<spec>` | Scripted input: hold keys during frame ranges, e.g. `100-150:D;200-230:Space,A` (frames counted from the first update, key names from `Keys`) |
+| `BESTIFF_SHOT=<png>` | Save a screenshot (plus render targets, like `F12`) to that path at frame `BESTIFF_SHOT_FRAME` |
+| `BESTIFF_SHOT_FRAME=<n>` | Frame for `BESTIFF_SHOT` (default 180) |
+| `BESTIFF_DUMP` | Print diagnostics to stderr: level/grid scale, sprite scales, bones, texture regions, enemies, elevators, first Krypton light passes |
+| `BESTIFF_NO_CANNON` | Don't spawn wall cannons |
+| `BESTIFF_JUMP_FRAME=<n>` | Apply an upward impulse to the hero at physics frame n |
+| `BESTIFF_KILL_FRAME=<n>` | Kill the hero (ragdoll death) at physics frame n |
+| `BESTIFF_DEATH_LOG` | Log the dead hero's body state every 10 physics frames |
+| `BESTIFF_GIRDER_LOG` | Log every girder's body and rope state every 15 physics frames |
+| `BESTIFF_KRYPTON_DUMP=<prefix>` | Save the Krypton light map at frame 60 as `<prefix>_postlight.png`, `_blurH.png`, `_postblur.png` |
+| `BESTIFF_KR_LOG` | Log the first two light passes' render state |
+| `BESTIFF_KR_NOSTENCIL` | Draw lights without the shadow stencil test |
+| `BESTIFF_KR_NOSCISSOR` | Draw lights without the scissor rectangle |
+| `BESTIFF_KR_FLIPSCISSOR` | Flip the light scissor rectangle vertically |
+| `BESTIFF_KR_NOCULL` | Draw lights with culling off |
 
 ## Porting notes
 
