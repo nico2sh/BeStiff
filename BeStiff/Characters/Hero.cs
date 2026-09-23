@@ -629,7 +629,7 @@ namespace Be_Stiff.Characters
 
 		public override void Hit(Vector2 hitDirection, Vector2 position, HitType hitType)
 		{
-			if (state == StateEnum.Defending || state == StateEnum.JumpDefending)
+			if (stateMachine.CurrentState is StateDefending)
 			{
 				if (Math.Sign(hitDirection.X) != (int)sideLooking)
 				{

@@ -20,8 +20,6 @@ namespace Be_Stiff.Characters
 		Swinging,
 		Stunned,
 		Dead,
-		Climbing,
-		Defending,
-		JumpDefending
+		Climbing
 	}
 }
