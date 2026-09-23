@@ -254,7 +254,9 @@ namespace Be_Stiff.Characters
 		public sealed override bool LoadFromOgmo(OgmoObject obj)
 		{
 			WorldScaledOgmoObject worldScaledOgmoObject = new WorldScaledOgmoObject(obj);
-			Vector2 pos = new Vector2(worldScaledOgmoObject.Position.X, worldScaledOgmoObject.Position.Y - 0.25f);
+			// Feet go 0.25 m below the Ogmo point (y-down), i.e. on the floor under
+			// the template's origin.
+			Vector2 pos = new Vector2(worldScaledOgmoObject.Position.X, worldScaledOgmoObject.Position.Y + 0.25f);
 			if (obj.Name.Equals("Hero"))
 			{
 				Load(pos, WorldObjectType.Hero, obj);
