@@ -130,7 +130,7 @@ namespace Be_Stiff.Physics
 						}
 						else if (!oneSidedAffected.IgnoreOneSide())
 						{
-							if (!CheckIfAbove(oneSidedAffected.FloorPosition + new Vector2(0f, 0.2f), oneSidedWorldObject.TheVertices, worldObjectData.Object.MainBody))
+							if (!CheckIfAbove(oneSidedAffected.FloorPosition - new Vector2(0f, 0.2f), oneSidedWorldObject.TheVertices, worldObjectData.Object.MainBody))
 							{
 								contact.Enabled = false;
 							}
@@ -159,7 +159,7 @@ namespace Be_Stiff.Physics
 						}
 						else if (!oneSidedAffected2.IgnoreOneSide())
 						{
-							if (!CheckIfAbove(oneSidedAffected2.FloorPosition + new Vector2(0f, 0.2f), oneSidedWorldObject2.TheVertices, worldObjectData2.Object.MainBody))
+							if (!CheckIfAbove(oneSidedAffected2.FloorPosition - new Vector2(0f, 0.2f), oneSidedWorldObject2.TheVertices, worldObjectData2.Object.MainBody))
 							{
 								contact.Enabled = false;
 							}

@@ -280,7 +280,8 @@ namespace Be_Stiff.Characters.States
 		private bool GethighestOneSidePoint(Vertices vertices, Body body, Vector2 pos, out Vector2 highestPos)
 		{
 			bool result = false;
-			float num = float.MinValue;
+			// y-down world: the highest point has the smallest y.
+			float num = float.MaxValue;
 			for (int i = 0; i < vertices.Count; i++)
 			{
 				int num2 = i + 1;
@@ -297,7 +298,7 @@ namespace Be_Stiff.Characters.States
 					float num3 = vector.Y / vector.X;
 					float num4 = worldPoint.Y - num3 * worldPoint.X;
 					float num5 = pos.X * num3 + num4;
-					if (num <= num5)
+					if (num5 < num)
 					{
 						num = num5;
 					}
