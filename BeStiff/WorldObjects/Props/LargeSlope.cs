@@ -19,7 +19,7 @@ namespace Be_Stiff.WorldObjects.Props
 			{
 				return false;
 			}
-			float rotation = 0f - MathHelper.ToRadians(obj.Rotation);
+			float rotation = MathHelper.ToRadians(obj.Rotation);
 			base.Name = "Slope-" + GameElementsControl.Counter;
 			WorldScaledOgmoObject worldScaledOgmoObject = new WorldScaledOgmoObject(obj);
 			string text2 = text.Substring(10);
@@ -74,6 +74,7 @@ namespace Be_Stiff.WorldObjects.Props
 			}
 			ShadowHull shadowHull = ShadowHull.CreateConvex(ref points);
 			shadowHull.Position = GameElementsControl.ConvertWorldToScreen(mainBody.Position);
+			shadowHull.Angle = rotation;
 			GameElementsControl.Krypton.Hulls.Add(shadowHull);
 			GameElementsControl.AddShadowCasterWorldObject(this);
 			return true;

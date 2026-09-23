@@ -79,7 +79,7 @@ namespace Be_Stiff.WorldObjects.Props
 			scanSpeed = obj.GetValue<OgmoNumberValue>("ScanSpeed").Value;
 			aimSpeed = obj.GetValue<OgmoNumberValue>("AimSpeed").Value;
 			shootFrequency = obj.GetValue<OgmoNumberValue>("ShootFrequency").Value;
-			float rotation = 0f - MathHelper.ToRadians(obj.Rotation);
+			float rotation = MathHelper.ToRadians(obj.Rotation);
 			base.Name = "Cannon-" + GameElementsControl.Counter;
 			WorldScaledOgmoObject worldScaledOgmoObject = new WorldScaledOgmoObject(obj);
 			mainBody = BodyFactory.CreateBody(GameElementsControl.World);
@@ -143,7 +143,7 @@ namespace Be_Stiff.WorldObjects.Props
 				if (timeToEmitSmoke <= 0.0)
 				{
 					timeToEmitSmoke += smokeFrequency;
-					smoke.Direction = 0f - mainBody.Rotation - (float)Math.PI / 2f;
+					smoke.Direction = mainBody.Rotation - (float)Math.PI / 2f;
 					smoke.Trigger(GameElementsControl.ConvertWorldToScreen(mainBody.Position));
 				}
 			}
@@ -234,7 +234,7 @@ namespace Be_Stiff.WorldObjects.Props
 
 		private bool AimToPoint(ref Vector2 pos)
 		{
-			float angle = 0f - (pos - cannon.Position).GetAngle();
+			float angle = (pos - cannon.Position).GetAngle();
 			return AimTo(angle);
 		}
 
@@ -280,7 +280,7 @@ namespace Be_Stiff.WorldObjects.Props
 		public override void Draw()
 		{
 			cannon.Draw();
-			cannonBody.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), 0f - mainBody.Rotation);
+			cannonBody.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), mainBody.Rotation);
 		}
 
 		public override bool CanBeHooked()

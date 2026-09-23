@@ -103,7 +103,7 @@ namespace Be_Stiff.WorldObjects.Props
 			mainBody.Rotation = num;
 			shadowHull = ShadowHull.CreateRectangle(ConvertUnits.ToDisplayUnits(0.5f, num2));
 			shadowHull.Position = GameElementsControl.ConvertWorldToScreen(mainBody.Position);
-			shadowHull.Angle = 0f - mainBody.Rotation;
+			shadowHull.Angle = mainBody.Rotation;
 			GameElementsControl.Krypton.Hulls.Add(shadowHull);
 			piecesList = new List<WallPiece>();
 			foreach (Vertices item in list)

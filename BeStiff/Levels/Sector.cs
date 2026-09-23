@@ -21,7 +21,7 @@ namespace Be_Stiff.Levels
 
 		public Vector2 UpLeft => Position;
 
-		public Vector2 downRight => Position + new Vector2(rectangleZone.Width, 0f - rectangleZone.Height);
+		public Vector2 downRight => Position + new Vector2(rectangleZone.Width, rectangleZone.Height);
 
 		public List<Portal> Portals => portals;
 

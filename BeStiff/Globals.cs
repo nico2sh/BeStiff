@@ -13,6 +13,8 @@ namespace Be_Stiff
 
 		public const Category CollisionHero = Category.Cat3;
 
+		public const Category CollisionCharacters = CollisionHero | CollisionEnemy;
+
 		public const Category CollisionFeetCategory = Category.Cat5;
 
 		public const Category CollisionFragmentCategory = Category.Cat6;

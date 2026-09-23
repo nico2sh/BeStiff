@@ -136,6 +136,9 @@ namespace Be_Stiff.Characters
 		/// <summary>Debug helper: moves the whole character to a position (display pixels).</summary>
 		public void DebugTeleport(Vector2 displayPos)
 		{
+			// Joints added during load are only linked to their bodies on the
+			// next step; link them now so the whole body graph moves.
+			GameElementsControl.World.ProcessChanges();
 			Vector2 target = ConvertUnits.ToSimUnits(displayPos);
 			Vector2 delta = target - bodyRect.Position;
 			var moved = new System.Collections.Generic.HashSet<FarseerPhysics.Dynamics.Body>();
@@ -347,12 +350,14 @@ namespace Be_Stiff.Characters
 
 		protected virtual void SetCollisionCategories()
 		{
+			// Characters pass through each other; punches and kicks use AABB
+			// queries on categories, so fighting is unaffected.
 			bodyRect.CollisionCategories = mainCollisionCategory;
-			bodyRect.CollidesWith = Category.All & ~mainCollisionCategory;
+			bodyRect.CollidesWith = Category.All & ~Globals.CollisionCharacters;
 			bodyBalance.CollisionCategories = mainCollisionCategory;
-			bodyBalance.CollidesWith = Category.All & ~mainCollisionCategory;
+			bodyBalance.CollidesWith = Category.All & ~Globals.CollisionCharacters;
 			bodyCircBottom.CollisionCategories = mainCollisionCategory | Category.Cat5;
-			bodyCircBottom.CollidesWith = Category.All & ~mainCollisionCategory & ~Category.Cat6 & ~Category.Cat5;
+			bodyCircBottom.CollidesWith = Category.All & ~Globals.CollisionCharacters & ~Category.Cat6 & ~Category.Cat5;
 		}
 
 		protected virtual void Dispose()

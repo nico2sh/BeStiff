@@ -50,7 +50,7 @@ namespace Be_Stiff.Weapons
 
 		public void Draw()
 		{
-			cannonSprite.Draw(GameElementsControl.ConvertWorldToScreen(position), 0f - Rotation);
+			cannonSprite.Draw(GameElementsControl.ConvertWorldToScreen(position), Rotation);
 		}
 	}
 }

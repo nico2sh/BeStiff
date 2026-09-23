@@ -83,6 +83,12 @@ namespace OgmoXNA
 		/// fixed-size objects; bring such dimensions back to the old scale so
 		/// physics built from them matches the old world.
 		/// </summary>
+		/// <summary>
+		/// Scale at which to draw the object's (current-size) art: 1/factor on
+		/// an axis whose template size was halved for a legacy level, else 1.
+		/// </summary>
+		public Vector2 LegacyDrawScale { get; private set; } = Vector2.One;
+
 		internal void ShrinkLegacyTemplate(int factor, OgmoObjectTemplate template)
 		{
 			if (template == null || System.Array.IndexOf(UnscaledTemplates, Name) >= 0)
@@ -102,6 +108,7 @@ namespace OgmoXNA
 			if (shrinkX || shrinkY)
 			{
 				Origin = new Vector2(shrinkX ? Origin.X / factor : Origin.X, shrinkY ? Origin.Y / factor : Origin.Y);
+				LegacyDrawScale = new Vector2(shrinkX ? 1f / factor : 1f, shrinkY ? 1f / factor : 1f);
 				Rectangle source = Source;
 				source.Width = Width;
 				source.Height = Height;

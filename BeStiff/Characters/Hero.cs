@@ -419,7 +419,7 @@ namespace Be_Stiff.Characters
 		{
 			base.SetCollisionCategories();
 			bodyCircBottomSlide.CollisionCategories = mainCollisionCategory;
-			bodyCircBottomSlide.CollidesWith = Category.All & ~mainCollisionCategory;
+			bodyCircBottomSlide.CollidesWith = Category.All & ~Globals.CollisionCharacters;
 		}
 
 		private void UpdateArmPosition()
@@ -627,6 +627,8 @@ namespace Be_Stiff.Characters
 			}
 		}
 
+		private const float BlockAbsorbLimit = 10f;
+
 		public override void Hit(Vector2 hitDirection, Vector2 position, HitType hitType)
 		{
 			if (stateMachine.CurrentState is StateDefending)
@@ -635,7 +637,10 @@ namespace Be_Stiff.Characters
 				{
 					hitDirection /= 2f;
 				}
-				if (hitDirection.Length() <= 10f)
+				// Blocked hits this weak do no damage. The tolerance covers float
+				// rounding: a regular punch (20) blocked from the front halves to
+				// 10 give or take a few ulps.
+				if (hitDirection.Length() <= BlockAbsorbLimit + 0.01f)
 				{
 					return;
 				}

@@ -38,6 +38,11 @@ namespace Be_Stiff.Characters.States
 			base.CurrentState.OnEnter();
 		}
 
+		protected override string DebugInfo()
+		{
+			return $"rot={hero.MainBody.Rotation:F2} pos={hero.Position} energy={hero.Energy:F1}";
+		}
+
 		public override void Update()
 		{
 			bool stun = CheckEvent(3);

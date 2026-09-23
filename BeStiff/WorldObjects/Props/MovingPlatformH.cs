@@ -302,7 +302,7 @@ namespace Be_Stiff.WorldObjects.Props
 
 		public void DrawHull()
 		{
-			platformSprite.DrawNoOrigin(GameElementsControl.ConvertWorldToScreen(mainBody.Position), 0f - mainBody.Rotation, rectangle);
+			platformSprite.DrawNoOrigin(GameElementsControl.ConvertWorldToScreen(mainBody.Position), mainBody.Rotation, rectangle);
 			pivotSprite.Draw(pivotPosition1, pivotRotation);
 			pivotSprite.Draw(pivotPosition2, pivotRotation);
 			borderSprite.Draw(borderPosition1, 0f, SpriteEffects.None);

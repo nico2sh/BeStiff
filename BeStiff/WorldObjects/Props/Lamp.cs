@@ -41,7 +41,7 @@ namespace Be_Stiff.WorldObjects.Props
 					return false;
 				}
 			}
-			float num = 0f - MathHelper.ToRadians(obj.Rotation);
+			float num = MathHelper.ToRadians(obj.Rotation);
 			mainBody = BodyFactory.CreateBody(GameElementsControl.World);
 			mainBody.Position = worldScaledOgmoObject.Position;
 			mainBody.BodyType = BodyType.Dynamic;
@@ -89,8 +89,8 @@ namespace Be_Stiff.WorldObjects.Props
 
 		public override void Update()
 		{
-			spriteVariables.rotation = 0f - mainBody.Rotation;
-			light.Angle = 0f - mainBody.Rotation + (float)Math.PI / 2f;
+			spriteVariables.rotation = mainBody.Rotation;
+			light.Angle = mainBody.Rotation + (float)Math.PI / 2f;
 			light.Position = GameElementsControl.ConvertWorldToScreen(mainBody.Position);
 		}
 

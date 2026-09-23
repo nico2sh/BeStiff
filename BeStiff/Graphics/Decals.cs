@@ -19,6 +19,8 @@ namespace Be_Stiff.Graphics
 			public Vector2 Origin;
 
 			public float Rotation;
+
+			public Vector2 Scale;
 		}
 
 		private List<Decal> decals;
@@ -33,13 +35,17 @@ namespace Be_Stiff.Graphics
 			OgmoObject[] objects = layer.Objects;
 			foreach (OgmoObject ogmoObject in objects)
 			{
+				Vector2 scale = ogmoObject.LegacyDrawScale;
 				Decal item = new Decal
 				{
 					Texture = ogmoObject.Texture,
 					Position = ogmoObject.Position,
-					Rectangle = new Rectangle(0, 0, ogmoObject.Width, ogmoObject.Height),
-					Origin = ogmoObject.Origin,
-					Rotation = MathHelper.ToRadians(ogmoObject.Rotation)
+					// On legacy levels the object's size was halved but the art was
+					// not: take the full-size region of the texture and draw it scaled.
+					Rectangle = new Rectangle(0, 0, (int)(ogmoObject.Width / scale.X), (int)(ogmoObject.Height / scale.Y)),
+					Origin = ogmoObject.Origin / scale,
+					Rotation = MathHelper.ToRadians(ogmoObject.Rotation),
+					Scale = scale
 				};
 				decals.Add(item);
 			}
@@ -49,7 +55,7 @@ namespace Be_Stiff.Graphics
 		{
 			foreach (Decal decal in decals)
 			{
-				GameElementsControl.ScreenManager.SpriteBatch.Draw(decal.Texture, decal.Position, decal.Rectangle, Color.White, decal.Rotation, decal.Origin, 1f, SpriteEffects.None, 0f);
+				GameElementsControl.ScreenManager.SpriteBatch.Draw(decal.Texture, decal.Position, decal.Rectangle, Color.White, decal.Rotation, decal.Origin, decal.Scale, SpriteEffects.None, 0f);
 			}
 		}
 	}

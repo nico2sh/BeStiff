@@ -18,7 +18,7 @@ namespace Be_Stiff.WorldObjects.Props
 			{
 				return false;
 			}
-			float rotation = 0f - MathHelper.ToRadians(obj.Rotation);
+			float rotation = MathHelper.ToRadians(obj.Rotation);
 			base.Name = "Slope-" + GameElementsControl.Counter;
 			WorldScaledOgmoObject worldScaledOgmoObject = new WorldScaledOgmoObject(obj);
 			string text2 = text.Substring(5);

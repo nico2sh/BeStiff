@@ -32,7 +32,8 @@ namespace Be_Stiff.Levels
 				OgmoNode item = new OgmoNode(ConvertUnits.ToSimUnits(ogmoNode.Position));
 				nodes.Add(item);
 			}
-			Rotation = 0f - obj.Rotation;
+			// Ogmo rotates clockwise on screen, which is positive in the y-down world.
+			Rotation = obj.Rotation;
 		}
 	}
 }

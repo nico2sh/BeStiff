@@ -67,7 +67,7 @@ namespace Be_Stiff.WorldObjects.Props
 			}
 			aimSpeed = obj.GetValue<OgmoNumberValue>("AimSpeed").Value;
 			shootFrequency = obj.GetValue<OgmoNumberValue>("ShootFrequency").Value;
-			float rotation = 0f - MathHelper.ToRadians(obj.Rotation);
+			float rotation = MathHelper.ToRadians(obj.Rotation);
 			base.Name = "Turret-" + GameElementsControl.Counter;
 			preparing = false;
 			WorldScaledOgmoObject worldScaledOgmoObject = new WorldScaledOgmoObject(obj);
@@ -129,7 +129,7 @@ namespace Be_Stiff.WorldObjects.Props
 				if (timeToEmitSmoke <= 0.0)
 				{
 					timeToEmitSmoke += smokeFrequency;
-					smoke.Direction = 0f - mainBody.Rotation - (float)Math.PI / 2f;
+					smoke.Direction = mainBody.Rotation - (float)Math.PI / 2f;
 					smoke.Trigger(GameElementsControl.ConvertWorldToScreen(mainBody.Position));
 				}
 			}

@@ -70,7 +70,7 @@ namespace Be_Stiff.WorldObjects.Props
 
 		public override void Draw()
 		{
-			spikesSprite.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), 0f - mainBody.Rotation, rectangle);
+			spikesSprite.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), mainBody.Rotation, rectangle);
 		}
 
 		public void DrawHull()

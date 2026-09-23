@@ -266,7 +266,7 @@ namespace Be_Stiff.WorldObjects.Props
 			{
 				velocitiesCache = mainBody.LinearVelocity;
 				angularVelocitiesCache = mainBody.AngularVelocity;
-				glassSpriteVariables.rotation = 0f - mainBody.Rotation;
+				glassSpriteVariables.rotation = mainBody.Rotation;
 				return;
 			}
 			foreach (GlassPiece pieces in piecesList)
