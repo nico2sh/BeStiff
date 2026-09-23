@@ -38,7 +38,10 @@ namespace SKAnimation
 				length = length,
 				frames = frames,
 				defaultFrame = 0,
-				ragdoll = false
+				// The old format had no ragdoll flag; current skeletons put every
+				// body bone in the ragdoll, and without it a dead character's
+				// sprite stays frozen while its physics body falls.
+				ragdoll = true
 			};
 		}
 	}

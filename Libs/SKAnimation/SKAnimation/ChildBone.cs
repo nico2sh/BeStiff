@@ -145,7 +145,7 @@ namespace SKAnimation
 			if (texture != null)
 			{
 				if (System.Environment.GetEnvironmentVariable("BESTIFF_DUMP") != null)
-					System.Console.Error.WriteLine($"  bone {name} tex={texture.Width}x{texture.Height} frames={frames} defaultFrame={defaultFrame} len={length} pos={base.Position} angle={angle} drawOrder={drawOrder}");
+					System.Console.Error.WriteLine($"  bone {name} tex={texture.Width}x{texture.Height} frames={frames} defaultFrame={defaultFrame} len={length} pos={base.Position} angle={angle} drawOrder={drawOrder} ragdoll={isInRagdoll}");
 				frameWidth = texture.Width / frames;
 				textureOrigin = new Vector2(frameWidth / 2, texture.Height / 2);
 				spriteRectangle = new Rectangle(0, 0, frameWidth, texture.Height);
