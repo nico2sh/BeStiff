@@ -1,0 +1,31 @@
+namespace Be_Stiff.Characters
+{
+	public enum HeroStates
+	{
+		Walking,
+		Running,
+		BackWalking,
+		Standed,
+		JumpSmall,
+		JumpHigh,
+		JumpLied,
+		WallJump,
+		JumpFlip,
+		TransitionLie,
+		Lied,
+		Crawling,
+		TransitionStand,
+		WallSlide,
+		Hanging,
+		Climbing,
+		SmallClimbing,
+		Kicking,
+		Kicking2,
+		Punching,
+		Punching2,
+		Swinging,
+		Defending,
+		Hit,
+		Stunned
+	}
+}

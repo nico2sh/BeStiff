@@ -1,0 +1,5 @@
+bin/
+obj/
+*.user
+BeStiff/Content/bin/
+BeStiff/Content/obj/

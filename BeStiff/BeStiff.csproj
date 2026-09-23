@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RollForward>Major</RollForward>
+    <AssemblyName>BeStiff</AssemblyName>
+    <RootNamespace>Be_Stiff</RootNamespace>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PublishReadyToRun>false</PublishReadyToRun>
+    <TieredCompilation>false</TieredCompilation>
+    <NoWarn>CS1591;CS0618;CS8981;CS0108;CS0114;CS0109;CS0169;CS0414;CS0649;CS0067;CS0168;CS0219;CS0162</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Icon.ico" />
+    <None Remove="Icon.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icon.ico">
+      <LogicalName>Icon.ico</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icon.bmp">
+      <LogicalName>Icon.bmp</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content/**/*.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5.1" />
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.5.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Libs/FarseerPhysicsXNA/FarseerPhysicsXNA.csproj" />
+    <ProjectReference Include="../Libs/DebugViewXNA/DebugViewXNA.csproj" />
+    <ProjectReference Include="../Libs/OgmoXNA/OgmoXNA.csproj" />
+    <ProjectReference Include="../Libs/SKAnimation/SKAnimation.csproj" />
+    <ProjectReference Include="../Libs/Krypton/Krypton.csproj" />
+    <ProjectReference Include="../Libs/ProjectMercury/ProjectMercury.csproj" />
+    <ProjectReference Include="../Libs/EasyStorage/EasyStorage.csproj" />
+  </ItemGroup>
+</Project>
