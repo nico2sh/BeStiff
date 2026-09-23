@@ -43,6 +43,18 @@ namespace Be_Stiff.AI
 			throw new Exception("Enemy already added with this name: " + enemy.Name);
 		}
 
+		/// <summary>Debug helper: kills every living enemy.</summary>
+		public void DebugKillAll()
+		{
+			foreach (Enemy enemy in enemies)
+			{
+				if (!enemy.IsDead())
+				{
+					enemy.BloodyDie();
+				}
+			}
+		}
+
 		public Enemy GetEnemyByName(string enemyName)
 		{
 			for (int i = 0; i < enemies.Count; i++)

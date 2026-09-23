@@ -24,6 +24,8 @@ namespace Be_Stiff.Levels
 		private static readonly int DebugJumpFrame = int.TryParse(Environment.GetEnvironmentVariable("BESTIFF_JUMP_FRAME"), out int f) ? f : 0;
 
 		private static readonly int DebugKillFrame = int.TryParse(Environment.GetEnvironmentVariable("BESTIFF_KILL_FRAME"), out int f) ? f : 0;
+
+		private static readonly int DebugKillEnemyFrame = int.TryParse(Environment.GetEnvironmentVariable("BESTIFF_KILL_ENEMY_FRAME"), out int f) ? f : 0;
 		private static int physicsFrames;
 
 		/// <summary>Debug helper: describes the hero's state.</summary>

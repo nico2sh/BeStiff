@@ -393,6 +393,10 @@ namespace Be_Stiff.Levels
 			{
 				hero.BloodyDie(); // debug: ragdoll test
 			}
+			if (DebugKillEnemyFrame > 0 && physicsFrames == DebugKillEnemyFrame)
+			{
+				enemiesControl.DebugKillAll(); // debug: enemy ragdoll test
+			}
 			if (!nanReported)
 			{
 				foreach (var body in world.BodyList)
