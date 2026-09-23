@@ -23,6 +23,8 @@ namespace Be_Stiff.Graphics
 			public Vector2 Scale;
 		}
 
+		private static readonly bool DebugDump = System.Environment.GetEnvironmentVariable("BESTIFF_DUMP") != null;
+
 		private List<Decal> decals;
 
 		public Decals()
@@ -35,19 +37,25 @@ namespace Be_Stiff.Graphics
 			OgmoObject[] objects = layer.Objects;
 			foreach (OgmoObject ogmoObject in objects)
 			{
-				Vector2 scale = ogmoObject.LegacyDrawScale;
+				// On legacy levels the art is drawn at 1/factor. Origins come from the
+				// current templates and were only halved on non-resized axes, so
+				// undo that to get the origin in texture pixels.
+				float factor = ogmoObject.LegacyFactor;
+				Vector2 scale = new Vector2(1f / factor);
 				Decal item = new Decal
 				{
 					Texture = ogmoObject.Texture,
 					Position = ogmoObject.Position,
-					// On legacy levels the object's size was halved but the art was
-					// not: take the full-size region of the texture and draw it scaled.
-					Rectangle = new Rectangle(0, 0, (int)(ogmoObject.Width / scale.X), (int)(ogmoObject.Height / scale.Y)),
-					Origin = ogmoObject.Origin / scale,
+					Rectangle = new Rectangle(0, 0, ogmoObject.Width * (int)factor, ogmoObject.Height * (int)factor),
+					Origin = ogmoObject.Origin / ogmoObject.LegacyDrawScale,
 					Rotation = MathHelper.ToRadians(ogmoObject.Rotation),
 					Scale = scale
 				};
 				decals.Add(item);
+				if (DebugDump)
+				{
+					System.Console.Error.WriteLine($"  decal {ogmoObject.Name} pos={ogmoObject.Position} size={ogmoObject.Width}x{ogmoObject.Height} origin={ogmoObject.Origin} rot={ogmoObject.Rotation} tex={ogmoObject.Texture.Width}x{ogmoObject.Texture.Height} scale={scale}");
+				}
 			}
 		}
 

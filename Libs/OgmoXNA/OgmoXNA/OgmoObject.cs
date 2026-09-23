@@ -89,12 +89,20 @@ namespace OgmoXNA
 		/// </summary>
 		public Vector2 LegacyDrawScale { get; private set; } = Vector2.One;
 
+		/// <summary>
+		/// Legacy scale factor of the level this object belongs to (1 on current
+		/// levels and for templates that were not shrunk). Its art is drawn at
+		/// 1/LegacyFactor on both axes, including axes the level resized.
+		/// </summary>
+		public int LegacyFactor { get; private set; } = 1;
+
 		internal void ShrinkLegacyTemplate(int factor, OgmoObjectTemplate template)
 		{
 			if (template == null || System.Array.IndexOf(UnscaledTemplates, Name) >= 0)
 			{
 				return;
 			}
+			LegacyFactor = factor;
 			bool shrinkX = !template.IsResizableX && Width == template.Width;
 			bool shrinkY = !template.IsResizableY && Height == template.Height;
 			if (shrinkX)
