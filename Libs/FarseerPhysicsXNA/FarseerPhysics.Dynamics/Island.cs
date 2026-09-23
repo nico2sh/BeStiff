@@ -267,10 +267,6 @@ namespace FarseerPhysics.Dynamics
 				{
 					break;
 				}
-				if (i == Settings.TOIPositionIterations - 1)
-				{
-					i = i;
-				}
 			}
 			for (int j = 0; j < BodyCount; j++)
 			{

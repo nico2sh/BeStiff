@@ -59,9 +59,6 @@ namespace EasyStorage
 		public event FileExistsCompletedEventHandler FileExistsCompleted;
 		public event GetFilesCompletedEventHandler GetFilesCompleted;
 		public event EventHandler<EventArgs> DeviceSelected;
-		public event EventHandler<SaveDeviceEventArgs> DeviceSelectorCanceled;
-		public event EventHandler<SaveDevicePromptEventArgs> DeviceReselectPromptClosed;
-		public event EventHandler<SaveDeviceEventArgs> DeviceDisconnected;
 		public event EventHandler<EventArgs> EnabledChanged;
 		public event EventHandler<EventArgs> UpdateOrderChanged;
 

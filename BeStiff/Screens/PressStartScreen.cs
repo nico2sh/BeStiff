@@ -51,14 +51,6 @@ namespace Be_Stiff.Screens
 			SharedSaveDevice sharedSaveDevice = new SharedSaveDevice();
 			base.ScreenManager.Game.Components.Add(sharedSaveDevice);
 			saveDevice = sharedSaveDevice;
-			sharedSaveDevice.DeviceSelectorCanceled += delegate(object s, SaveDeviceEventArgs e)
-			{
-				e.Response = SaveDeviceEventResponse.Force;
-			};
-			sharedSaveDevice.DeviceDisconnected += delegate(object s, SaveDeviceEventArgs e)
-			{
-				e.Response = SaveDeviceEventResponse.Force;
-			};
 			sharedSaveDevice.PromptForDevice();
 			sharedSaveDevice.DeviceSelected += delegate(object s, EventArgs e)
 			{
