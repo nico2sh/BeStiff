@@ -64,6 +64,7 @@ namespace Be_Stiff.Screens
 			{
 				Globals.SaveDevice = (SaveDevice)s;
 				Globals.LoadOptions();
+				base.ScreenManager.SetFullScreen(Globals.OptionFullScreen);
 				Globals.LoadSaveGames();
 				base.AudioManager.MusicVolume = (float)Globals.OptionMusicVolume / 10f;
 				base.AudioManager.SoundVolume = (float)Globals.OptionSoundVolume / 10f;

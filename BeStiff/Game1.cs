@@ -17,6 +17,7 @@ namespace Be_Stiff
 			graphics = new GraphicsDeviceManager(this);
 			graphics.PreferredBackBufferWidth = 1280;
 			graphics.PreferredBackBufferHeight = 720;
+			graphics.HardwareModeSwitch = true;
 			base.IsFixedTimeStep = true;
 			base.IsMouseVisible = false;
 			base.Content = new CaseInsensitiveContentManager(base.Services, "Content");
@@ -60,6 +61,7 @@ namespace Be_Stiff
 			{
 				Globals.SaveDevice = (EasyStorage.SaveDevice)s;
 				Globals.LoadOptions();
+				screenManager.SetFullScreen(Globals.OptionFullScreen);
 				Globals.LoadSaveGames();
 				screenManager.AudioManager.MusicVolume = (float)Globals.OptionMusicVolume / 10f;
 				screenManager.AudioManager.SoundVolume = (float)Globals.OptionSoundVolume / 10f;

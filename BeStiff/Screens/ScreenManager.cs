@@ -92,34 +92,22 @@ namespace Be_Stiff.Screens
 			}
 		}
 
-		public bool InitGraphicsMode(int iWidth, int iHeight, bool bFullScreen)
+		/// <summary>
+		/// Switches between windowed and full screen. The back buffer stays at
+		/// the game's fixed size: screen layout, camera and light maps are sized
+		/// from it, so full screen uses a hardware mode switch (the display
+		/// scales the image) instead of borderless desktop full screen, which
+		/// would resize the back buffer to the desktop resolution.
+		/// </summary>
+		public void SetFullScreen(bool fullScreen)
 		{
-			if (!bFullScreen)
+			if (graphicsDeviceManager.IsFullScreen == fullScreen)
 			{
-				if (iWidth <= GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width && iHeight <= GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height)
-				{
-					graphicsDeviceManager.PreferredBackBufferWidth = iWidth;
-					graphicsDeviceManager.PreferredBackBufferHeight = iHeight;
-					graphicsDeviceManager.IsFullScreen = bFullScreen;
-					graphicsDeviceManager.ApplyChanges();
-					return true;
-				}
+				return;
 			}
-			else
-			{
-				foreach (DisplayMode supportedDisplayMode in GraphicsAdapter.DefaultAdapter.SupportedDisplayModes)
-				{
-					if (supportedDisplayMode.Width == iWidth && supportedDisplayMode.Height == iHeight)
-					{
-						graphicsDeviceManager.PreferredBackBufferWidth = iWidth;
-						graphicsDeviceManager.PreferredBackBufferHeight = iHeight;
-						graphicsDeviceManager.IsFullScreen = bFullScreen;
-						graphicsDeviceManager.ApplyChanges();
-						return true;
-					}
-				}
-			}
-			return false;
+			graphicsDeviceManager.HardwareModeSwitch = true;
+			graphicsDeviceManager.IsFullScreen = fullScreen;
+			graphicsDeviceManager.ApplyChanges();
 		}
 
 		public override void Update(GameTime gameTime)

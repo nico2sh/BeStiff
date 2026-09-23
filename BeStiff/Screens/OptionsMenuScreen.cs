@@ -96,6 +96,7 @@ namespace Be_Stiff.Screens
 		private void FullScreenMenuEntrySelected(object sender, PlayerIndexEventArgs e)
 		{
 			fullScreen = !fullScreen;
+			base.ScreenManager.SetFullScreen(fullScreen);
 			SetMenuEntryText();
 		}
 
