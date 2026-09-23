@@ -1,0 +1,17 @@
+global using Be_Stiff.AI;
+global using Be_Stiff.Audio;
+global using Be_Stiff.Characters;
+global using Be_Stiff.Characters.States;
+global using Be_Stiff.Graphics;
+global using Be_Stiff.Graphics.Backgrounds;
+global using Be_Stiff.Input;
+global using Be_Stiff.Levels;
+global using Be_Stiff.Physics;
+global using Be_Stiff.Screens;
+global using Be_Stiff.Utils;
+global using Be_Stiff.Weapons;
+global using Be_Stiff.Weapons.Projectiles;
+global using Be_Stiff.WorldObjects;
+global using Be_Stiff.WorldObjects.Goals;
+global using Be_Stiff.WorldObjects.Pickups;
+global using Be_Stiff.WorldObjects.Props;
