@@ -72,9 +72,6 @@ namespace OgmoXNA
 		/// </summary>
 		public int Width { get; private set; }
 
-		/// <summary>Numeric object values that hold pixel coordinates or distances.</summary>
-		private static readonly string[] PixelValueNames = { "PositionX", "PositionY", "OffsetX", "OffsetY" };
-
 		/// <summary>
 		/// Object templates whose size was NOT doubled when the project moved
 		/// to its larger grid; every other template was.
@@ -109,46 +106,6 @@ namespace OgmoXNA
 				source.Width = Width;
 				source.Height = Height;
 				Source = source;
-			}
-		}
-
-		internal void ScaleLegacy(int factor, OgmoObjectTemplate template)
-		{
-			Position *= factor;
-			// Fixed-size objects take their size from the (already updated)
-			// project template; only resizable dimensions are level data.
-			bool scaleX = template == null || template.IsResizableX;
-			bool scaleY = template == null || template.IsResizableY;
-			if (template != null && !scaleX && Width != template.Width)
-			{
-				scaleX = true;
-			}
-			if (template != null && !scaleY && Height != template.Height)
-			{
-				scaleY = true;
-			}
-			if (scaleX)
-			{
-				Width *= factor;
-			}
-			if (scaleY)
-			{
-				Height *= factor;
-			}
-			Rectangle source = Source;
-			source.Width = Width;
-			source.Height = Height;
-			Source = source;
-			foreach (OgmoNode node in nodes)
-			{
-				node.Position *= factor;
-			}
-			foreach (string name in PixelValueNames)
-			{
-				if (values.TryGetValue(name, out OgmoValue value) && value is OgmoNumberValue number)
-				{
-					number.ScaleLegacy(factor);
-				}
 			}
 		}
 

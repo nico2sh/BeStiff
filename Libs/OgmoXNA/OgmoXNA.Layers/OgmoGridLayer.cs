@@ -26,19 +26,6 @@ namespace OgmoXNA.Layers
 		/// <summary>Grid cell size in pixels actually used to decode RawData.</summary>
 		public int EffectiveGridSize { get; private set; }
 
-		internal void ScaleLegacy(int factor)
-		{
-			EffectiveGridSize *= factor;
-			if (rectData != null)
-			{
-				for (int i = 0; i < rectData.Count; i++)
-				{
-					Rectangle r = rectData[i];
-					rectData[i] = new Rectangle(r.X * factor, r.Y * factor, r.Width * factor, r.Height * factor);
-				}
-			}
-		}
-
 		/// <summary>
 		/// Gets the rectangle data for the layer.  This propery is only populated when 
 		/// <see cref="P:OgmoXNA.Layers.Settings.OgmoGridLayerSettings.ExportAsObjects" /> is <c>true</c>; otherwise, it returns <c>null</c>.

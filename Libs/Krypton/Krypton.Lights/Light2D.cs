@@ -178,31 +178,40 @@ namespace Krypton.Lights
 			helper.Effect.Parameters["LightPosition"].SetValue(mPosition);
 			helper.Effect.Parameters["Texture0"].SetValue(mTexture);
 			helper.Effect.Parameters["LightIntensityFactor"].SetValue(1f / (mIntensity * mIntensity));
-			if (System.Environment.GetEnvironmentVariable("BESTIFF_KR_LOG") != null && logCount < 2)
+			if (DebugLog && logCount < 2)
 				System.Console.Error.WriteLine($"ShadowStrech param = {helper.Effect.Parameters["ShadowStrech"].GetValueSingle()}");
 			effectTechnique.Passes["ShadowStencil"].Apply();
 			helper.BufferDraw();
 			effectTechnique.Passes["Light"].Apply();
 			var gd = helper.GraphicsDevice;
-			if (System.Environment.GetEnvironmentVariable("BESTIFF_KR_NOSTENCIL") != null)
+			if (DebugNoStencil)
 			{
 				gd.DepthStencilState = DepthStencilState.None;
 			}
-			if (System.Environment.GetEnvironmentVariable("BESTIFF_KR_NOSCISSOR") != null)
+			if (DebugNoScissor)
 			{
 				gd.RasterizerState = new RasterizerState { CullMode = gd.RasterizerState.CullMode, ScissorTestEnable = false };
 			}
-			if (System.Environment.GetEnvironmentVariable("BESTIFF_KR_NOCULL") != null)
+			if (DebugNoCull)
 			{
 				gd.RasterizerState = new RasterizerState { CullMode = CullMode.None, ScissorTestEnable = gd.RasterizerState.ScissorTestEnable };
 			}
-			if (System.Environment.GetEnvironmentVariable("BESTIFF_KR_LOG") != null && logCount++ < 2)
+			if (DebugLog && logCount++ < 2)
 			{
 				var ds = gd.DepthStencilState; var rs = gd.RasterizerState; var bs = gd.BlendState;
 				System.Console.Error.WriteLine($"Light pass: stencilEnable={ds.StencilEnable} func={ds.StencilFunction} ref={ds.ReferenceStencil} pass={ds.StencilPass} depth={ds.DepthBufferEnable} scissor={rs.ScissorTestEnable} cull={rs.CullMode} blend={bs.ColorSourceBlend}/{bs.ColorDestinationBlend} write={bs.ColorWriteChannels} tex={(mTexture == null ? "null" : mTexture.Width + "x" + mTexture.Height)} pos={mPosition} range={mRange} color={mColor} intensity={mIntensity} fov={mFov} viewport={gd.Viewport.Width}x{gd.Viewport.Height}");
 			}
 			helper.DrawClippedFov(mPosition, mAngle, mRange * 2f, mColor, mFov);
 		}
+
+		// Debug switches, read once instead of per light per frame.
+		private static readonly bool DebugLog = System.Environment.GetEnvironmentVariable("BESTIFF_KR_LOG") != null;
+
+		private static readonly bool DebugNoStencil = System.Environment.GetEnvironmentVariable("BESTIFF_KR_NOSTENCIL") != null;
+
+		private static readonly bool DebugNoScissor = System.Environment.GetEnvironmentVariable("BESTIFF_KR_NOSCISSOR") != null;
+
+		private static readonly bool DebugNoCull = System.Environment.GetEnvironmentVariable("BESTIFF_KR_NOCULL") != null;
 
 		private static bool IsInRange(Vector2 offset, float dist)
 		{

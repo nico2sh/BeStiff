@@ -362,10 +362,6 @@ namespace Be_Stiff
 		{
 			legacyLevel = legacy;
 			templateSizes.Clear();
-			foreach (var pair in gameSprites)
-			{
-				pair.Value.Scale = pair.Value.TexturePath != null ? LegacySpriteScale(pair.Value.TexturePath, pair.Value.Texture) : 1f;
-			}
 			foreach (var template in project.ObjectTemplates)
 			{
 				if (string.IsNullOrEmpty(template.TextureFile))
@@ -375,13 +371,13 @@ namespace Be_Stiff
 				string key = System.IO.Path.GetFileNameWithoutExtension(template.TextureFile).ToLowerInvariant();
 				templateSizes[key] = new Point(template.Width, template.Height);
 			}
+			// Rescale sprites loaded before the level's templates were known.
+			foreach (var pair in gameSprites)
+			{
+				pair.Value.Scale = pair.Value.TexturePath != null ? LegacySpriteScale(pair.Value.TexturePath, pair.Value.Texture) : 1f;
+			}
 		}
 
-		/// <summary>
-		/// Some sprites were never redrawn when the game moved to its final
-		/// scale and are exactly half the size their Ogmo template expects.
-		/// Returns 2 for those, 1 otherwise.
-		/// </summary>
 		/// <summary>Art that was redrawn at twice its size for the current scale.</summary>
 		private static readonly string[] RedrawnSprites =
 		{
@@ -391,6 +387,12 @@ namespace Be_Stiff
 
 		public static bool IsLegacyLevel => legacyLevel;
 
+		/// <summary>
+		/// Draw scale for sprites whose art does not match the level's scale.
+		/// Current-scale levels: 2 for art that was never redrawn and is half
+		/// the size its Ogmo template expects. Legacy levels: 0.5 for art in
+		/// <see cref="RedrawnSprites" />. 1 otherwise.
+		/// </summary>
 		private static float LegacySpriteScale(string texturePath, Texture2D texture)
 		{
 			if (legacyLevel)
@@ -493,14 +495,14 @@ namespace Be_Stiff
 			float dt = (float)lastFrameGameTimeInMs * 0.001f;
 			world.Step(dt);
 			physicsFrames++;
-			if (Environment.GetEnvironmentVariable("BESTIFF_DEATH_LOG") != null && hero != null && hero.IsDead() && physicsFrames % 10 == 0)
+			if (DebugDeathLog && hero != null && hero.IsDead() && physicsFrames % 10 == 0)
 				Console.Error.WriteLine($"  dead f{physicsFrames} rot={hero.MainBody.Rotation:F2} angVel={hero.MainBody.AngularVelocity:F2} pos={hero.MainBody.Position} vel={hero.MainBody.LinearVelocity} awake={hero.MainBody.Awake} fixedRot={hero.MainBody.FixedRotation} inertia={hero.MainBody.Inertia:F2}");
-			if (int.TryParse(Environment.GetEnvironmentVariable("BESTIFF_JUMP_FRAME"), out int jumpFrame) && physicsFrames == jumpFrame && hero != null)
+			if (DebugJumpFrame > 0 && physicsFrames == DebugJumpFrame && hero != null)
 			{
 				Vector2 up = new Vector2(0f, -hero.MainBody.Mass * 12f);
 				hero.MainBody.ApplyLinearImpulse(ref up); // debug: scripted jump
 			}
-			if (Environment.GetEnvironmentVariable("BESTIFF_GIRDER_LOG") != null && physicsFrames % 15 == 0)
+			if (DebugGirderLog && physicsFrames % 15 == 0)
 			{
 				foreach (var wo in worldShadowObjects.Values)
 				{
@@ -508,7 +510,7 @@ namespace Be_Stiff
 						Console.Error.WriteLine($"  girder f{physicsFrames} pos={g.MainBody.Position} rot={g.MainBody.Rotation:F2} vel={g.MainBody.LinearVelocity} awake={g.MainBody.Awake} repairs={world.NonFiniteRepairs} hero={hero.Position} {g.DebugRopes()}");
 				}
 			}
-			if (int.TryParse(Environment.GetEnvironmentVariable("BESTIFF_KILL_FRAME"), out int killFrame) && physicsFrames == killFrame && hero != null && !hero.IsDead())
+			if (DebugKillFrame > 0 && physicsFrames == DebugKillFrame && hero != null && !hero.IsDead())
 			{
 				hero.BloodyDie(); // debug: ragdoll test
 			}
@@ -675,6 +677,15 @@ namespace Be_Stiff
 		}
 
 		private static bool nanReported;
+
+		// Debug switches, read once instead of on every physics frame.
+		private static readonly bool DebugDeathLog = Environment.GetEnvironmentVariable("BESTIFF_DEATH_LOG") != null;
+
+		private static readonly bool DebugGirderLog = Environment.GetEnvironmentVariable("BESTIFF_GIRDER_LOG") != null;
+
+		private static readonly int DebugJumpFrame = int.TryParse(Environment.GetEnvironmentVariable("BESTIFF_JUMP_FRAME"), out int f) ? f : 0;
+
+		private static readonly int DebugKillFrame = int.TryParse(Environment.GetEnvironmentVariable("BESTIFF_KILL_FRAME"), out int f) ? f : 0;
 		private static int physicsFrames;
 
 		/// <summary>Debug helper: describes the hero's state.</summary>

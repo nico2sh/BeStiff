@@ -27,14 +27,6 @@ namespace OgmoXNA.Layers
 			}
 		}
 
-		internal void ScaleLegacy(int factor, OgmoProject project)
-		{
-			foreach (OgmoObject obj in allObjects)
-			{
-				obj.ScaleLegacy(factor, project.GetObjectTemplate(obj.Name));
-			}
-		}
-
 		internal OgmoObjectLayer(ContentReader reader, OgmoLevel level)
 			: base(reader)
 		{

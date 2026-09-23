@@ -84,16 +84,23 @@ namespace SKAnimation
 		public Skeleton CreateFromFile(ContentManager Content, string bones, string animations, string spritesSubFolder, World world, float scale, Body mainBody, float spriteScale, bool singleFrameSprites, float skeletonScale)
 		{
 			boneScale = skeletonScale;
-			Skeleton skeleton = ReadXML(bones, Content, mainBody);
-			skeleton.SpriteScale = spriteScale;
-			skeleton.SingleFrameSprites = singleFrameSprites;
-			skeleton.Load(Content, spritesSubFolder, world, scale);
-			List<Bone> boneList = skeleton.GetBoneList();
-			BoneAnimation[] animations2 = ReadAnimationFromXML(animations, Content, boneList);
-			skeleton.LoadAnimations(animations2);
-			skeleton.SetAnimation("NONE");
-			boneScale = 1f;
-			return skeleton;
+			try
+			{
+				Skeleton skeleton = ReadXML(bones, Content, mainBody);
+				skeleton.SpriteScale = spriteScale;
+				skeleton.SingleFrameSprites = singleFrameSprites;
+				skeleton.Load(Content, spritesSubFolder, world, scale);
+				List<Bone> boneList = skeleton.GetBoneList();
+				BoneAnimation[] animations2 = ReadAnimationFromXML(animations, Content, boneList);
+				skeleton.LoadAnimations(animations2);
+				skeleton.SetAnimation("NONE");
+				return skeleton;
+			}
+			finally
+			{
+				// Only this call is scaled; later reads through this reader are not.
+				boneScale = 1f;
+			}
 		}
 
 		public Skeleton CreateFromHelpers(ContentManager Content, BoneXMLReadHelper[] bxrhl, BoneAnimationXMLReadHelper[] bshl, string spritesSubFolder, World world, float scale, Body mainBody)

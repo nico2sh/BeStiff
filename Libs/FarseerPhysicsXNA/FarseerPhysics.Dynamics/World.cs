@@ -538,11 +538,6 @@ namespace FarseerPhysics.Dynamics
 			}
 		}
 
-		/// <summary>
-		/// Call this after you are done with time steps to clear the forces. You normally
-		/// call this after each call to Step, unless you are performing sub-steps. By default,
-		/// forces will be automatically cleared, so you don't need to call this function.
-		/// </summary>
 		/// <summary>Number of times a body had to be restored after the solver produced NaN.</summary>
 		public int NonFiniteRepairs { get; private set; }
 
@@ -570,14 +565,24 @@ namespace FarseerPhysics.Dynamics
 					body.Sweep.C = Vector2.Zero;
 					body.Sweep.A = 0f;
 				}
+				body.Sweep.C0 = body.Sweep.C;
+				body.Sweep.A0 = body.Sweep.A;
 				body.LinearVelocityInternal = Vector2.Zero;
 				body.AngularVelocityInternal = 0f;
 				body.Force = Vector2.Zero;
 				body.Torque = 0f;
 				body.SynchronizeTransform();
+				// Solve already pushed the NaN transform into the broad-phase;
+				// move the fixture proxies back so the dynamic tree holds finite AABBs.
+				body.SynchronizeFixtures();
 			}
 		}
 
+		/// <summary>
+		/// Call this after you are done with time steps to clear the forces. You normally
+		/// call this after each call to Step, unless you are performing sub-steps. By default,
+		/// forces will be automatically cleared, so you don't need to call this function.
+		/// </summary>
 		public void ClearForces()
 		{
 			for (int i = 0; i < BodyList.Count; i++)

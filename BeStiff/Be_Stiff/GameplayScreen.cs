@@ -42,7 +42,7 @@ namespace Be_Stiff
 			}
 			base.ScreenManager.Game.ResetElapsedTime();
 			base.AudioManager.StopSong();
-			base.AudioManager.MusicVolume = Globals.OptionMusicVolume;
+			base.AudioManager.MusicVolume = (float)Globals.OptionMusicVolume / 10f;
 			dead = false;
 			GC.Collect();
 		}

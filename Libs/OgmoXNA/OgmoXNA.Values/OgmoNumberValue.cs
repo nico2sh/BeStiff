@@ -10,11 +10,6 @@ namespace OgmoXNA.Values
 		/// <summary>
 		/// Creates an instance of <see cref="T:OgmoXNA.Values.OgmoNumberValue" />.
 		/// </summary>
-		internal void ScaleLegacy(int factor)
-		{
-			Value *= factor;
-		}
-
 		public OgmoNumberValue()
 		{
 		}

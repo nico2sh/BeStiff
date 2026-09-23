@@ -103,28 +103,59 @@ namespace EasyStorage
 			return Path.Combine(ContainerPath(containerName), fileName);
 		}
 
+		/// <summary>
+		/// Serializes file operations across all devices (they share one root
+		/// directory). Without it, overlapping SaveAsync calls on the same file
+		/// fail with a sharing violation and the later save is silently lost.
+		/// </summary>
+		private static readonly object FileLock = new object();
+
 		public void Save(string containerName, string fileName, FileAction saveAction)
 		{
-			using (FileStream stream = File.Create(FilePath(containerName, fileName)))
+			lock (FileLock)
 			{
-				saveAction(stream);
+				// Write to a temporary file and swap it in, so a failure halfway
+				// through never leaves a truncated save behind.
+				string path = FilePath(containerName, fileName);
+				string tempPath = path + ".tmp";
+				try
+				{
+					using (FileStream stream = File.Create(tempPath))
+					{
+						saveAction(stream);
+					}
+					File.Move(tempPath, path, overwrite: true);
+				}
+				finally
+				{
+					if (File.Exists(tempPath))
+					{
+						File.Delete(tempPath);
+					}
+				}
 			}
 		}
 
 		public void Load(string containerName, string fileName, FileAction loadAction)
 		{
-			using (FileStream stream = File.OpenRead(FilePath(containerName, fileName)))
+			lock (FileLock)
 			{
-				loadAction(stream);
+				using (FileStream stream = File.OpenRead(FilePath(containerName, fileName)))
+				{
+					loadAction(stream);
+				}
 			}
 		}
 
 		public void Delete(string containerName, string fileName)
 		{
-			string path = FilePath(containerName, fileName);
-			if (File.Exists(path))
+			lock (FileLock)
 			{
-				File.Delete(path);
+				string path = FilePath(containerName, fileName);
+				if (File.Exists(path))
+				{
+					File.Delete(path);
+				}
 			}
 		}
 
