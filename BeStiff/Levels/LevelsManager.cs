@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 
@@ -52,7 +53,7 @@ namespace Be_Stiff.Levels
 			{
 				foreach (LevelSelection level in area.Levels)
 				{
-					if (level.AssetName == levelAssetName)
+					if (string.Equals(level.AssetName, levelAssetName, StringComparison.OrdinalIgnoreCase))
 					{
 						return level;
 					}
@@ -85,7 +86,7 @@ namespace Be_Stiff.Levels
 			{
 				for (int i = 0; i < area.Levels.Count; i++)
 				{
-					if (area.Levels[i].AssetName == currentLevelAssetName)
+					if (string.Equals(area.Levels[i].AssetName, currentLevelAssetName, StringComparison.OrdinalIgnoreCase))
 					{
 						int num = i + 1;
 						if (num < area.Levels.Count)

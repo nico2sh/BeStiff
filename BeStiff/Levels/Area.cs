@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
@@ -43,7 +44,7 @@ namespace Be_Stiff.Levels
 		{
 			foreach (LevelSelection level in levels)
 			{
-				if (level.AssetName == levelAssetName)
+				if (string.Equals(level.AssetName, levelAssetName, StringComparison.OrdinalIgnoreCase))
 				{
 					return level;
 				}
