@@ -101,7 +101,10 @@ namespace SKAnimation
 			{
 				if (newKeyFrame > frames - 1)
 				{
-					newKeyFrame = frames % newKeyFrame;
+					// Wrap into the strip. (Was frames % newKeyFrame, which gave a
+					// frame past the end, and so an empty sprite, e.g. frame 1 of a
+					// single-frame bone.)
+					newKeyFrame %= frames;
 				}
 				currentFrame = newKeyFrame;
 				spriteRectangle.X = currentFrame * frameWidth;
