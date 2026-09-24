@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.Serialization;
 
 namespace Nuclex.UserInterface;
 
@@ -30,14 +29,6 @@ public class DuplicateNameException : Exception
 	/// <param name="inner">Preceding exception that has caused this exception</param>
 	public DuplicateNameException(string message, Exception inner)
 		: base(message, inner)
-	{
-	}
-
-	/// <summary>Initializes the exception from its serialized state</summary>
-	/// <param name="info">Contains the serialized fields of the exception</param>
-	/// <param name="context">Additional environmental informations</param>
-	protected DuplicateNameException(SerializationInfo info, StreamingContext context)
-		: base(info, context)
 	{
 	}
 }

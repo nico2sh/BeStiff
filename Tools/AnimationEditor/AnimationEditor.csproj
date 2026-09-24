@@ -9,6 +9,9 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <NoWarn>CS0618;CS0612;CS0067;CS0168;CS0169;CS0649;CS0414;CS0219;CS8981</NoWarn>
+    <!-- MonoGame.Framework.Content.Pipeline ships distro-specific native assets
+         (debian-x64, fedora-x64, ...); the SDK warns about those RIDs. Harmless. -->
+    <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);NETSDK1206</MSBuildWarningsAsMessages>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Content/**/*.xnb">

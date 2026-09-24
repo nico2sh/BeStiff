@@ -79,7 +79,16 @@ namespace Nuclex.Input
 			services?.AddService(typeof(IInputService), this);
 		}
 
-		public event EventHandler<EventArgs> EnabledChanged;
+		/// <summary>Never raised: the input manager is always enabled.</summary>
+		public event EventHandler<EventArgs> EnabledChanged
+		{
+			add
+			{
+			}
+			remove
+			{
+			}
+		}
 
 		public event EventHandler<EventArgs> UpdateOrderChanged;
 
