@@ -99,16 +99,30 @@ namespace Be_Stiff
 				screenshotRequested = true;
 			}
 			f12WasDown = f12;
+			double start = DebugFlags.Perf ? FramePerf.Now : 0.0;
 			base.Update(gameTime);
+			if (DebugFlags.Perf)
+			{
+				FramePerf.AddUpdate(FramePerf.Now - start);
+			}
 		}
 
 		private int drawnFrames;
 
 		protected override void Draw(GameTime gameTime)
 		{
+			double drawStart = DebugFlags.Perf ? FramePerf.Now : 0.0;
 			base.GraphicsDevice.Clear(Color.Black);
 			base.Draw(gameTime);
+			if (DebugFlags.Perf)
+			{
+				FramePerf.AddDraw(FramePerf.Now - drawStart);
+			}
 			drawnFrames++;
+			if (DebugFlags.Perf)
+			{
+				FramePerf.EndFrame();
+			}
 			SaveDebugScreenshot();
 		}
 

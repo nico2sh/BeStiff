@@ -77,6 +77,9 @@ namespace Be_Stiff.Screens
 			ContentManager content = base.Game.Content;
 			spriteBatch = new SpriteBatch(base.GraphicsDevice);
 			font = content.Load<SpriteFont>("fonts\\mainfont");
+			// Menus load this on first open; preload it so opening one mid-level
+			// (fail, pause) doesn't read from disk.
+			content.Load<SpriteFont>("fonts\\titlefont");
 			blankTexture = content.Load<Texture2D>("blank");
 			foreach (GameScreen screen in screens)
 			{

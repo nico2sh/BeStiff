@@ -130,14 +130,21 @@ namespace Be_Stiff.Levels
 		public static void Draw()
 		{
 			krypton.Matrix = Camera.View;
+			FramePerf.Mark(null);
 			krypton.LightMapPrepare();
+			FramePerf.Mark("lights");
 			SetRenderTargets();
+			FramePerf.Mark("targets");
 			// Switching render targets doesn't preserve the back buffer, so clear it here.
 			ScreenManager.GraphicsDevice.Clear(Color.Transparent);
 			DrawBackground();
+			FramePerf.Mark("background");
 			DrawLineOfSightShadows();
+			FramePerf.Mark("sight");
 			DrawMaskedObjects();
+			FramePerf.Mark("objects");
 			DrawHero();
+			FramePerf.Mark("hero");
 			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap, (DepthStencilState)null, (RasterizerState)null, (Effect)null, Camera.View);
 			foreach (WorldObject value in worldShadowObjects.Values)
 			{
@@ -154,9 +161,11 @@ namespace Be_Stiff.Levels
 			alphaNoisesEffect.CurrentTechnique.Passes[0].Apply();
 			DrawCameraQuad(renderTargetNoises);
 			ScreenManager.SpriteBatch.End();
+			FramePerf.Mark("overlay");
 			ScreenManager.SpriteBatch.Begin();
 			userInterface.Draw();
 			ScreenManager.SpriteBatch.End();
+			FramePerf.Mark("ui");
 			if (debugViewEnabled)
 			{
 				Matrix projection = Camera.SimProjection;

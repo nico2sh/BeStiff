@@ -24,6 +24,8 @@ namespace Be_Stiff
 
 		public static readonly bool StateLog = IsSet("BESTIFF_STATE_LOG");
 
+		public static readonly bool Perf = IsSet("BESTIFF_PERF");
+
 		public static readonly bool DeathLog = IsSet("BESTIFF_DEATH_LOG");
 
 		public static readonly bool GirderLog = IsSet("BESTIFF_GIRDER_LOG");

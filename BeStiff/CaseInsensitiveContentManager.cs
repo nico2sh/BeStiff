@@ -38,6 +38,11 @@ namespace Be_Stiff
 
 		protected override Stream OpenStream(string assetName)
 		{
+			if (DebugFlags.Perf)
+			{
+				// Content read from disk; mid-level loads show up as hitches.
+				System.Console.Error.WriteLine($"perf load frame {FramePerf.Frame}: {assetName}");
+			}
 			string relative = Path.Combine(RootDirectory, assetName.Replace('\\', '/')) + ".xnb";
 			string resolved = Resolve(relative);
 			if (resolved == null)
