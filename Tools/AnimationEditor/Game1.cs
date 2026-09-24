@@ -285,6 +285,12 @@ public class Game1 : Game
 		mainRenderTarget = new RenderTarget2D(graphics.GraphicsDevice, LogicalViewport.Width, LogicalViewport.Height);
 		animRenderTarget = new RenderTarget2D(graphics.GraphicsDevice, LogicalViewport.Width, LogicalViewport.Height);
 		RecreateSceneTarget();
+		if (ImportArgs != null)
+		{
+			ContentImporter.Run(((Game)this).Services, ((Game)this).GraphicsDevice, ImportArgs);
+			((Game)this).Exit();
+			return;
+		}
 		if (!string.IsNullOrEmpty(StartupProject) && LoadProject(StartupProject))
 		{
 			RefreshBoneList();
@@ -356,6 +362,12 @@ public class Game1 : Game
 		spriteBatch.Draw(sceneTarget, new Rectangle(0, 0, sceneTarget.Width * uiScale, sceneTarget.Height * uiScale), Color.White);
 		spriteBatch.End();
 	}
+
+	/// <summary>Per-frame callbacks of open dialogs; removed when they return false.</summary>
+	private readonly List<Func<bool>> dialogUpdaters = new List<Func<bool>>();
+
+	/// <summary>Arguments of --import: convert game content to a project, then exit.</summary>
+	public string[] ImportArgs;
 
 	/// <summary>Project file to open at startup (first command-line argument).</summary>
 	public string StartupProject;
@@ -1113,7 +1125,8 @@ public class Game1 : Game
 		lpw.Children.Add(labelControl);
 		InputControl fileNameInputControl = new InputControl();
 		fileNameInputControl.Bounds = new UniRectangle(180f, 30f, 250f, 24f);
-		fileNameInputControl.Text = projectPath;
+		fileNameInputControl.Text = string.IsNullOrEmpty(projectPath) ? Directory.GetCurrentDirectory() + "/" : projectPath;
+		fileNameInputControl.CaretPosition = fileNameInputControl.Text.Length;
 		lpw.Children.Add(fileNameInputControl);
 		ListControl pathList = new ListControl();
 		pathList.Bounds = new UniRectangle(10f, 60f, 430f, 150f);
@@ -1122,25 +1135,62 @@ public class Game1 : Game
 		pathList.Slider.Bounds.Size.Y.Offset -= 2f;
 		pathList.SelectionMode = ListSelectionMode.Single;
 		lpw.Children.Add(pathList);
-		for (int num = pastProjectsPath.Count - 1; num >= 0; num--)
+		// The list browses the folder of the typed path (recent projects when it
+		// is empty); pathTargets holds the full path behind each entry.
+		List<string> pathTargets = new List<string>();
+		string listedFor = null;
+		bool refreshingList = false;
+		void RefreshPathList()
 		{
-			string item = pastProjectsPath[num];
-			pathList.Items.Add(item);
+			refreshingList = true;
+			listedFor = fileNameInputControl.Text ?? "";
+			pathList.SelectedItems.Clear();
+			pathList.Items.Clear();
+			pathTargets.Clear();
+			if (listedFor.Length == 0)
+			{
+				for (int num = pastProjectsPath.Count - 1; num >= 0; num--)
+				{
+					pathList.Items.Add(pastProjectsPath[num]);
+					pathTargets.Add(pastProjectsPath[num]);
+				}
+			}
+			else
+			{
+				FileBrowser.List(listedFor, pathList.Items, pathTargets);
+			}
+			refreshingList = false;
 		}
+		RefreshPathList();
 		pathList.SelectionChanged += delegate
 		{
-			if (pathList.SelectedItems.Count > 0)
+			if (refreshingList || pathList.SelectedItems.Count == 0)
 			{
-				fileNameInputControl.Text = pathList.Items[pathList.SelectedItems[0]];
+				return;
 			}
+			string target = pathTargets[pathList.SelectedItems[0]].Replace('\\', '/');
+			fileNameInputControl.Text = Directory.Exists(target) ? target.TrimEnd('/') + "/" : target;
+			fileNameInputControl.CaretPosition = fileNameInputControl.Text.Length;
 		};
+		dialogUpdaters.Add(delegate
+		{
+			if (lpw.Parent == null)
+			{
+				return false; // closed
+			}
+			if (fileNameInputControl.Text != listedFor)
+			{
+				RefreshPathList();
+			}
+			return true;
+		});
 		ButtonControl buttonControl = new ButtonControl();
 		buttonControl.Text = "Load";
 		buttonControl.Bounds = new UniRectangle(new UniScalar(0f, 10f), new UniScalar(1f, -42f), 80f, 32f);
 		buttonControl.Pressed += delegate
 		{
 			// A full path to the project file, so keep a leading '/'.
-			string text = ValidatePath(fileNameInputControl.Text, isBasePath: true);
+			string text = ValidatePath(FileBrowser.Expand(fileNameInputControl.Text), isBasePath: true);
 			if (LoadProject(text))
 			{
 				if (!pastProjectsPath.Contains(text))
@@ -2361,6 +2411,7 @@ public class Game1 : Game
 			{
 				selectedAnimation = animationList.SelectedItems[0];
 			}
+			dialogUpdaters.RemoveAll(update => !update());
 			KeyboardState state = Keyboard.GetState();
 			if (state.IsKeyDown((Keys)112) && oldKeyState.IsKeyUp((Keys)112))
 			{

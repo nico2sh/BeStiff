@@ -132,6 +132,60 @@ namespace Nuclex.Input.Devices
 		}
 	}
 
+	/// <summary>
+	/// A keyboard that is never attached and raises no events: stands in for the
+	/// Xbox chat pads the GUI also listens to.
+	/// </summary>
+	internal sealed class NoKeyboard : IKeyboard
+	{
+		public event KeyDelegate KeyPressed
+		{
+			add
+			{
+			}
+			remove
+			{
+			}
+		}
+
+		public event KeyDelegate KeyReleased
+		{
+			add
+			{
+			}
+			remove
+			{
+			}
+		}
+
+		public event CharacterDelegate CharacterEntered
+		{
+			add
+			{
+			}
+			remove
+			{
+			}
+		}
+
+		public bool IsAttached => false;
+
+		public string Name => "No keyboard";
+
+		public KeyboardState GetState()
+		{
+			return default(KeyboardState);
+		}
+
+		public void TakeSnapshot()
+		{
+		}
+
+		public void Update()
+		{
+		}
+	}
+
 	/// <summary>Mouse polled each update.</summary>
 	internal sealed class PolledMouse : IMouse
 	{

@@ -46,6 +46,8 @@ namespace Nuclex.Input
 
 		private readonly PolledMouse mouse = new PolledMouse();
 
+		private readonly NoKeyboard noKeyboard = new NoKeyboard();
+
 		private readonly PolledGamePad[] gamePads;
 
 		private readonly ReadOnlyCollection<IKeyboard> keyboards;
@@ -136,8 +138,10 @@ namespace Nuclex.Input
 
 		public IKeyboard GetKeyboard(PlayerIndex playerIndex)
 		{
-			// Chat pads are not supported; the keyboard stands in.
-			return keyboard;
+			// Player-specific keyboards are Xbox chat pads. The GUI subscribes to
+			// them as well as the main keyboard, so returning the main keyboard
+			// here would deliver every key and character twice.
+			return noKeyboard;
 		}
 
 		public IGamePad GetGamePad(PlayerIndex playerIndex)
