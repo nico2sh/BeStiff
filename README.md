@@ -73,11 +73,22 @@ since the original project folder was lost.
 dotnet run --project Tools/AnimationEditor -- Animations/hero/test.xml
 ```
 
-The optional argument is a project file to open at startup; otherwise use
-"Load Project". Projects saved on Windows still load: a base path that does
-not exist falls back to the project file's folder, and file names are matched
-regardless of case. F1–F6 toggle the debug views (listed on screen), F2
-switches between skeleton and animation editing.
+Run it from the repository root. It needs only the .NET 8 SDK (none of the
+Wine/shader setup below). The optional argument is a project file to open at
+startup; otherwise use "Load Project" and type the path to the project file.
+
+- F1–F6 toggle the debug views (listed on screen); F2 switches between
+  skeleton and animation editing.
+- F7 cycles the zoom (1x, 2x, 3x) for high-resolution screens. The initial
+  zoom is the largest that fits the screen; `EDITOR_ZOOM=2` forces one.
+- Saving writes the project's skeleton and animation XML in place, so keep a
+  copy (or commit) before experimenting. The list of recently opened
+  projects is stored in `recentFiles.xml` in the working directory.
+- Projects saved on Windows still load: a base path that does not exist
+  falls back to the project file's folder, and file names are matched
+  regardless of case.
+- `EDITOR_SHOT=<png>` / `EDITOR_SHOT_FRAME=<n>` save a screenshot after n
+  frames (default 120).
 
 ## Building on Linux
 
