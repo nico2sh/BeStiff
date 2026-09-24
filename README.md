@@ -14,6 +14,8 @@ Anyway, life got in the way, I abandoned the project, and unfortunately the sour
 
 <img width="1280" height="720" alt="Be Stiff gameplay screenshot" src="https://github.com/user-attachments/assets/2c4d6683-a147-487a-bad1-2e2c802cc2f5" />
 
+![Overview of the test level in the original game](docs/images/testlevel-overview.png)
+
 ## Short description
 
 Port of the original XNA 4.0 game to MonoGame 3.8.5 (DesktopGL, .NET 8).
@@ -69,6 +71,8 @@ since the original project folder was lost.
 
 ## Animation editor
 
+![The animation editor with the hero project](docs/images/animation-editor.png)
+
 ```
 dotnet run --project Tools/AnimationEditor -- Animations/hero/test.xml
 ```
@@ -89,6 +93,28 @@ startup; otherwise use "Load Project" and type the path to the project file.
   regardless of case.
 - `EDITOR_SHOT=<png>` / `EDITOR_SHOT_FRAME=<n>` save a screenshot after n
   frames (default 120).
+
+Projects in `Animations/`:
+
+- `hero/test.xml` – the hero, as authored (`sprites`).
+- `hero/test2.xml` – the hero with the half-size art in `spritesa`
+  (`humanSkeleton_half.xml`, `humanAnimations_half.xml`: bone positions,
+  lengths and animation offsets halved).
+- `hero/hero_lorez.xml` – the hero skeleton with the small `spriteslorez`
+  art; those sprites fit the regular enemy's skeleton instead.
+- `hero_game`, `regularguy` (also `project_pistol.xml`, and
+  `project_lorez.xml` with `hero/spriteslorez`), `fatguy`, `turret` –
+  imported from the game's compiled content.
+
+`--import` turns a character compiled into the game's content (`.xnb`
+skeleton, animations and bone sprites) back into an editor project, then
+exits:
+
+```
+dotnet run --project Tools/AnimationEditor -- --import BeStiff/Content \
+  Skeletons/Enemy/FatGuy/FatGuySkeleton Skeletons/Enemy/FatGuy/FatGuyAnimations \
+  Sprites/Enemy/FatGuy Animations/fatguy
+```
 
 ## Building on Linux
 
