@@ -126,6 +126,10 @@ namespace Be_Stiff.Characters
 
 		public override void Update()
 		{
+			if (!Disposed && ApplyPendingCrush())
+			{
+				return;
+			}
 			if (DebugFlags.Dump && base.Name == "Mik7" && debugFrames++ < 8)
 				Console.Error.WriteLine($"Mik7 f{debugFrames} pos={Position} feet={FeetPosition} vel={MainBody.LinearVelocity} angVel={MainBody.AngularVelocity} rot={MainBody.Rotation} balanceMotor={balanceRevoluteJoint.MotorSpeed} wheelMotor={wheelRevoluteJoint.MotorSpeed} floorAngle={floorAngle} state={state} frameMs={GameElementsControl.LastFrameTimeInMS}");
 			if (!Disposed && (float.IsNaN(Position.X) || float.IsNaN(Position.Y)))
@@ -250,7 +254,7 @@ namespace Be_Stiff.Characters
 
 		protected override void Die()
 		{
-			if (state != StateEnum.Dead)
+			if (state != StateEnum.Dead && !crushed)
 			{
 				GameElementsControl.Score.AddPoints(Globals.ScoreKillEnemy);
 			}

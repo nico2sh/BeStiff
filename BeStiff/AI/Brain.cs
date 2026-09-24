@@ -446,7 +446,7 @@ namespace Be_Stiff.AI
 				}
 				else
 				{
-					safeDirection = (GameElementsControl.Random.Next(1) * 2 - 1) * 100;
+					safeDirection = (GameElementsControl.Random.Next(2) * 2 - 1) * 100; // Next(2): 0 or 1, i.e. left or right
 				}
 				startTimeForSafeDirection = GameElementsControl.CurrentTimeInMS;
 			}

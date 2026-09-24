@@ -452,8 +452,34 @@ namespace Be_Stiff.Characters
 			}
 		}
 
+		/// <summary>
+		/// Death visuals: the light widens and the view fades to red. Also run
+		/// after the body is gone (crushed), when Update no longer is.
+		/// </summary>
+		public void UpdateDeadEffects()
+		{
+			if (heroLight.Fov < (float)Math.PI * 2f)
+			{
+				heroLight.Fov += (float)GameElementsControl.RealLastFrameTimeInMS * 0.0031415927f;
+				if (heroLight.Fov > (float)Math.PI * 2f)
+				{
+					heroLight.Fov = (float)Math.PI * 2f;
+				}
+			}
+			baseShadowColor = Color.Red;
+			heroLight.Position = GameElementsControl.ConvertWorldToScreen(bodyRect.Position);
+			if (Disposed)
+			{
+				shadowColor = Color.Lerp(shadowColor, baseShadowColor, (float)(GameElementsControl.RealLastFrameTimeInMS / 500.0));
+			}
+		}
+
 		public override void Update()
 		{
+			if (ApplyPendingCrush())
+			{
+				return;
+			}
 			if (state != StateEnum.Dead)
 			{
 				CheckCategoriesSliding();
@@ -487,16 +513,7 @@ namespace Be_Stiff.Characters
 			}
 			else
 			{
-				if (heroLight.Fov < (float)Math.PI * 2f)
-				{
-					heroLight.Fov += (float)GameElementsControl.RealLastFrameTimeInMS * 0.0031415927f;
-					if (heroLight.Fov > (float)Math.PI * 2f)
-					{
-						heroLight.Fov = (float)Math.PI * 2f;
-					}
-				}
-				baseShadowColor = Color.Red;
-				heroLight.Position = GameElementsControl.ConvertWorldToScreen(bodyRect.Position);
+				UpdateDeadEffects();
 			}
 			shadowColor = Color.Lerp(shadowColor, baseShadowColor, (float)(GameElementsControl.RealLastFrameTimeInMS / 500.0));
 			base.Update();
@@ -637,7 +654,7 @@ namespace Be_Stiff.Characters
 				if (num2 > 35f)
 				{
 					stateMachine.InsertEvent(3);
-					bodyRect.ApplyLinearImpulse(hitDirection + new Vector2(0f, 30f));
+					bodyRect.ApplyLinearImpulse(hitDirection + new Vector2(0f, -30f)); // y-down: pop upwards
 				}
 				GameElementsControl.NoiseManager.AddNoise("heroDamage", base.Position);
 				stateMachine.InsertEvent(num);

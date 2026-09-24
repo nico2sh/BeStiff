@@ -397,7 +397,9 @@ namespace Be_Stiff.Characters
 			float num2 = (IsDead() ? 200 : 700);
 			if (num >= 100f && num >= num2)
 			{
-				Crush();
+				// Called during the physics step, where bodies must not be
+				// enabled or removed; crush on the next update instead.
+				crushPending = true;
 			}
 		}
 
@@ -428,16 +430,35 @@ namespace Be_Stiff.Characters
 			}
 		}
 
+
+		/// <summary>True when the character died by being crushed (no corpse is left).</summary>
+		protected bool crushed;
+
+		private bool crushPending;
+
+		/// <summary>Carries out a crush detected during the physics step. Returns true if the character was crushed.</summary>
+		protected bool ApplyPendingCrush()
+		{
+			if (!crushPending)
+			{
+				return false;
+			}
+			crushPending = false;
+			Crush();
+			return true;
+		}
+
 		protected virtual void Crush()
 		{
 			if (!disposed)
 			{
+				crushed = true;
 				if (!IsDead())
 				{
-					timeOfDeath = GameElementsControl.CurrentTimeInMS;
+					// Die normally (death light, brain, ...), then remove the body.
+					Die();
 				}
 				currentEnergy = 0f;
-				state = StateEnum.Dead;
 				bloodBlow.Angle = bodyRect.Rotation - (float)Math.PI / 2f;
 				bloodBlow.Trigger(GameElementsControl.ConvertWorldToScreen(bodyRect.Position));
 				Dispose();
@@ -506,6 +527,8 @@ namespace Be_Stiff.Characters
 		{
 			balanceRevoluteJoint.MotorEnabled = true;
 			state = StateEnum.Standed;
+			crushed = false;
+			crushPending = false;
 			wheelRevoluteJoint.MotorEnabled = true;
 			currentEnergy = baseEnergy;
 			weapon[activeWeapon].Holster();

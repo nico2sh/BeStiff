@@ -195,6 +195,7 @@ namespace Be_Stiff.Levels
 			inGameTimeInMs = 0.0;
 			lastFrameGameTimeInMs = 0.0;
 			realGameTimeInMs = 0.0;
+			heroDeathRealTime = -1.0;
 			realLastFrameGameTimeInMs = 0.0;
 			shadowColor = new Color(0, 0, 0, 100);
 			maskSpritePos = new Vector2(100f, 800f);
@@ -474,6 +475,10 @@ namespace Be_Stiff.Levels
 			{
 				hero.Update();
 			}
+			else if (hero.IsDead())
+			{
+				hero.UpdateDeadEffects();
+			}
 			CleanWorldObjects();
 			if (Level.Passed && !levelFinished)
 			{
@@ -493,13 +498,26 @@ namespace Be_Stiff.Levels
 			return false;
 		}
 
+		/// <summary>Real time from the hero's death to the fail screen.</summary>
+		private const double FailScreenDelayMs = 10000.0;
+
+		// Real time when the hero was first seen dead, or -1 while alive. Game
+		// time runs at 0.2x after death, so timing the fail screen in game time
+		// made it take ~20 real seconds.
+		private static double heroDeathRealTime = -1.0;
+
 		public static bool FinishByFail()
 		{
-			if (hero.IsDead() && hero.TimeOfDeath + 4000.0 <= CurrentTimeInMS)
+			if (!hero.IsDead())
 			{
-				return true;
+				heroDeathRealTime = -1.0;
+				return false;
 			}
-			return false;
+			if (heroDeathRealTime < 0.0)
+			{
+				heroDeathRealTime = realGameTimeInMs;
+			}
+			return realGameTimeInMs - heroDeathRealTime >= FailScreenDelayMs;
 		}
 
 		private static void CleanWorldObjects()
