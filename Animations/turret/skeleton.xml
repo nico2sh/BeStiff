@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:SKAnimation="SKAnimation">
+  <Asset Type="SKAnimation:BoneXMLReadHelper[]">
+    <Item>
+      <name>body</name>
+      <drawOrder>70</drawOrder>
+      <level>1</level>
+      <position>0 9</position>
+      <angle>-1.5708</angle>
+      <angleOffset>0</angleOffset>
+      <length>26</length>
+      <frames>1</frames>
+      <defaultFrame>0</defaultFrame>
+      <ragdoll>true</ragdoll>
+    </Item>
+    <Item>
+      <name>cannon</name>
+      <drawOrder>60</drawOrder>
+      <level>2</level>
+      <position>-24 0</position>
+      <angle>3.1416</angle>
+      <angleOffset>0.7853</angleOffset>
+      <length>26</length>
+      <frames>1</frames>
+      <defaultFrame>0</defaultFrame>
+      <ragdoll>true</ragdoll>
+    </Item>
+    <Item>
+      <name>leftUpLeg</name>
+      <drawOrder>80</drawOrder>
+      <level>2</level>
+      <position>-4 10</position>
+      <angle>2.25</angle>
+      <angleOffset>1.4</angleOffset>
+      <length>10</length>
+      <frames>1</frames>
+      <defaultFrame>0</defaultFrame>
+      <ragdoll>true</ragdoll>
+    </Item>
+    <Item>
+      <name>leftLoLeg</name>
+      <drawOrder>85</drawOrder>
+      <level>3</level>
+      <position>0 0</position>
+      <angle>2.05</angle>
+      <angleOffset>1.25</angleOffset>
+      <length>10</length>
+      <frames>1</frames>
+      <defaultFrame>0</defaultFrame>
+      <ragdoll>true</ragdoll>
+    </Item>
+    <Item>
+      <name>rightUpLeg</name>
+      <drawOrder>90</drawOrder>
+      <level>2</level>
+      <position>-4 -10</position>
+      <angle>-2.25</angle>
+      <angleOffset>1.4</angleOffset>
+      <length>10</length>
+      <frames>1</frames>
+      <defaultFrame>0</defaultFrame>
+      <ragdoll>true</ragdoll>
+    </Item>
+    <Item>
+      <name>rightLoLeg</name>
+      <drawOrder>95</drawOrder>
+      <level>3</level>
+      <position>0 0</position>
+      <angle>-2.05</angle>
+      <angleOffset>1.25</angleOffset>
+      <length>10</length>
+      <frames>1</frames>
+      <defaultFrame>0</defaultFrame>
+      <ragdoll>true</ragdoll>
+    </Item>
+  </Asset>
+</XnaContent>

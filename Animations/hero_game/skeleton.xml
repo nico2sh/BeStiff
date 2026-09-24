@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:SKAnimation="SKAnimation">
+  <Asset Type="SKAnimation:BoneXMLReadHelper[]">
+    <Item>
+      <name>torso</name>
+      <drawOrder>50</drawOrder>
+      <level>1</level>
+      <position>0 16</position>
+      <angle>-1.5707964</angle>
+      <angleOffset>0</angleOffset>
+      <length>24</length>
+      <frames>5</frames>
+      <defaultFrame>2</defaultFrame>
+      <ragdoll>true</ragdoll>
+    </Item>
+    <Item>
+      <name>rightUpLeg</name>
+      <drawOrder>70</drawOrder>
+      <level>2</level>
+      <position>-3 0</position>
+      <angle>-0.6457718</angle>
+      <angleOffset>1.9198622</angleOffset>
+      <length>20</length>
+      <frames>1</frames>
+      <defaultFrame>0</defaultFrame>
+      <ragdoll>true</ragdoll>
+    </Item>
+    <Item>
+      <name>rightLoLeg</name>
+      <drawOrder>80</drawOrder>
+      <level>3</level>
+      <position>0 0</position>
+      <angle>1.2566371</angle>
+      <angleOffset>1.5707964</angleOffset>
+      <length>20</length>
+      <frames>1</frames>
+      <defaultFrame>0</defaultFrame>
+      <ragdoll>true</ragdoll>
+    </Item>
+    <Item>
+      <name>rightFoot</name>
+      <drawOrder>60</drawOrder>
+      <level>4</level>
+      <position>0 0</position>
+      <angle>-1.2042772</angle>
+      <angleOffset>1.3962634</angleOffset>
+      <length>12</length>
+      <frames>2</frames>
+      <defaultFrame>0</defaultFrame>
+      <ragdoll>true</ragdoll>
+    </Item>
+    <Item>
+      <name>leftUpLeg</name>
+      <drawOrder>30</drawOrder>
+      <level>2</level>
+      <position>-2 0</position>
+      <angle>-0.6457718</angle>
+      <angleOffset>1.9198622</angleOffset>
+      <length>20</length>
+      <frames>1</frames>
+      <defaultFrame>0</defaultFrame>
+      <ragdoll>true</ragdoll>
+    </Item>
+    <Item>
+      <name>leftLoLeg</name>
+      <drawOrder>40</drawOrder>
+      <level>3</level>
+      <position>0 0</position>
+      <angle>1.2566371</angle>
+      <angleOffset>1.3962634</angleOffset>
+      <length>20</length>
+      <frames>1</frames>
+      <defaultFrame>0</defaultFrame>
+      <ragdoll>true</ragdoll>
+    </Item>
+    <Item>
+      <name>leftFoot</name>
+      <drawOrder>20</drawOrder>
+      <level>4</level>
+      <position>0 0</position>
+      <angle>-1.2042772</angle>
+      <angleOffset>1.3962634</angleOffset>
+      <length>12</length>
+      <frames>1</frames>
+      <defaultFrame>0</defaultFrame>
+      <ragdoll>true</ragdoll>
+    </Item>
+    <Item>
+      <name>leftUpArm</name>
+      <drawOrder>110</drawOrder>
+      <level>2</level>
+      <position>-30 0</position>
+      <angle>-0.5235988</angle>
+      <angleOffset>2.443461</angleOffset>
+      <length>15</length>
+      <frames>1</frames>
+      <defaultFrame>0</defaultFrame>
+      <ragdoll>true</ragdoll>
+    </Item>
+    <Item>
+      <name>leftLoArm</name>
+      <drawOrder>120</drawOrder>
+      <level>3</level>
+      <position>0 -1</position>
+      <angle>-1.2915436</angle>
+      <angleOffset>1.2915436</angleOffset>
+      <length>18</length>
+      <frames>1</frames>
+      <defaultFrame>0</defaultFrame>
+      <ragdoll>true</ragdoll>
+    </Item>
+    <Item>
+      <name>rightUpArm</name>
+      <drawOrder>0</drawOrder>
+      <level>2</level>
+      <position>-30 0</position>
+      <angle>-0.5235988</angle>
+      <angleOffset>2.443461</angleOffset>
+      <length>15</length>
+      <frames>1</frames>
+      <defaultFrame>0</defaultFrame>
+      <ragdoll>true</ragdoll>
+    </Item>
+    <Item>
+      <name>rightLoArm</name>
+      <drawOrder>10</drawOrder>
+      <level>3</level>
+      <position>0 0</position>
+      <angle>-1.2915436</angle>
+      <angleOffset>1.2915436</angleOffset>
+      <length>18</length>
+      <frames>1</frames>
+      <defaultFrame>0</defaultFrame>
+      <ragdoll>true</ragdoll>
+    </Item>
+    <Item>
+      <name>torso1</name>
+      <drawOrder>90</drawOrder>
+      <level>2</level>
+      <position>-5 14</position>
+      <angle>0</angle>
+      <angleOffset>0</angleOffset>
+      <length>1</length>
+      <frames>8</frames>
+      <defaultFrame>0</defaultFrame>
+      <ragdoll>false</ragdoll>
+    </Item>
+    <Item>
+      <name>head</name>
+      <drawOrder>100</drawOrder>
+      <level>2</level>
+      <position>-27 -2</position>
+      <angle>3.1415927</angle>
+      <angleOffset>0.5235988</angleOffset>
+      <length>30</length>
+      <frames>1</frames>
+      <defaultFrame>0</defaultFrame>
+      <ragdoll>true</ragdoll>
+    </Item>
+  </Asset>
+</XnaContent>

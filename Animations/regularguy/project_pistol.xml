@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:AnimationTest="AnimationTest">
+  <Asset Type="AnimationTest:ProjectData">
+    <BasePath></BasePath>
+    <SpritesSubPath>sprites_pistol</SpritesSubPath>
+    <SkeletonFile>skeleton.xml</SkeletonFile>
+    <AnimationsFile>animations.xml</AnimationsFile>
+    <BoundingBox>48 96</BoundingBox>
+  </Asset>
+</XnaContent>
