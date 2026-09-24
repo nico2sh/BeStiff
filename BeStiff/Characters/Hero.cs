@@ -700,7 +700,7 @@ namespace Be_Stiff.Characters
 
 		private void CheckSlopes()
 		{
-			float num = Math.Abs((float)Math.Sqrt(2f * (0f - GameElementsControl.Gravity.Y) * (physWidth / 3f)) / GameElementsControl.Gravity.Y);
+			float num = Math.Abs((float)Math.Sqrt(2f * GameElementsControl.Gravity.Y * (physWidth / 3f)) / GameElementsControl.Gravity.Y);
 			float num2 = bodyRect.LinearVelocity.X * num;
 			Vector2 worldVector = bodyRect.GetWorldVector(new Vector2(1f, 0f));
 			float num3 = worldVector.Y / worldVector.X;

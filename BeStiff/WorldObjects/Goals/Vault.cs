@@ -180,15 +180,15 @@ namespace Be_Stiff.WorldObjects.Goals
 		{
 			if (achieved)
 			{
-				openVault.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), 0f - mainBody.Rotation);
+				openVault.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), mainBody.Rotation);
 			}
 			else if (open)
 			{
-				openVaultFull.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), 0f - mainBody.Rotation);
+				openVaultFull.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), mainBody.Rotation);
 			}
 			else
 			{
-				closedVault.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), 0f - mainBody.Rotation);
+				closedVault.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), mainBody.Rotation);
 			}
 		}
 

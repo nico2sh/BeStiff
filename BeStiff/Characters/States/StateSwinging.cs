@@ -108,7 +108,7 @@ namespace Be_Stiff.Characters.States
 
 		protected void ActionJumpSwinging(float meters)
 		{
-			Vector2 impulse = new Vector2(0f, hero.Mass * (float)Math.Sqrt(2f * (0f - GameElementsControl.Gravity.Y) * meters));
+			Vector2 impulse = new Vector2(0f, -hero.Mass * (float)Math.Sqrt(2f * GameElementsControl.Gravity.Y * meters)); // y-down: up is -Y
 			hero.FeetBody.ApplyLinearImpulse(ref impulse);
 			GameElementsControl.NoiseManager.AddNoise("heroJump", hero.Position);
 		}

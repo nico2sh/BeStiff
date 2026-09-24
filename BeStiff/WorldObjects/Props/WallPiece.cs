@@ -70,13 +70,13 @@ namespace Be_Stiff.WorldObjects.Props
 
 		public override void Update()
 		{
-			spritePieceVariables.rotation = 0f - mainBody.Rotation;
+			spritePieceVariables.rotation = mainBody.Rotation;
 			if (touchCount >= 3)
 			{
 				mainBody.FixtureList[0].IsSensor = true;
 			}
 			shadowHull[0].Position = GameElementsControl.ConvertWorldToScreen(mainBody.Position);
-			shadowHull[0].Angle = 0f - mainBody.Rotation;
+			shadowHull[0].Angle = mainBody.Rotation;
 		}
 
 		public void Deactivate()

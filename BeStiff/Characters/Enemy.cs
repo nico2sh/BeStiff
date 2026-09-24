@@ -362,17 +362,20 @@ namespace Be_Stiff.Characters
 		{
 			if (Landed())
 			{
+				// y-down world: gravity is +Y, "up" is -Y.
+				float g = GameElementsControl.Gravity.Y;
 				Vector2 linearVelocity = bodyRect.LinearVelocity;
 				Vector2 vector = point - FloorPosition;
-				float num = Math.Min(Math.Abs(vector.X) / 3f, 0.25f);
-				float num2 = ((vector.Y < 0f) ? num : (vector.Y + num));
-				float num3 = num2 - vector.Y;
-				float num4 = (float)Math.Sqrt(2f * (0f - GameElementsControl.Gravity.Y) * num2) - linearVelocity.Y;
-				float num5 = Math.Abs(num4 / 10f);
-				float num6 = (float)Math.Sqrt(2f * num3 / (0f - GameElementsControl.Gravity.Y));
-				float num7 = num5 + num6;
-				float y = Mass * num4;
-				float x = Mass * (vector.X / num7 - linearVelocity.X);
+				float rise = -vector.Y; // how far above the feet the target is
+				float extra = Math.Min(Math.Abs(vector.X) / 3f, 0.25f);
+				float apex = (rise < 0f) ? extra : (rise + extra);
+				float fall = apex - rise;
+				float upSpeed = (float)Math.Sqrt(2f * g * apex) + linearVelocity.Y;
+				float timeUp = Math.Abs(upSpeed / g);
+				float timeDown = (float)Math.Sqrt(2f * fall / g);
+				float airTime = timeUp + timeDown;
+				float y = -Mass * upSpeed;
+				float x = Mass * (vector.X / airTime - linearVelocity.X);
 				Vector2 impulse = new Vector2(x, y);
 				bodyRect.ApplyLinearImpulse(ref impulse);
 				lastJumpTime = GameElementsControl.CurrentTimeInMS;

@@ -142,7 +142,7 @@ namespace Be_Stiff.Weapons.Projectiles
 		{
 			if (active)
 			{
-				grenadeSprite.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), 0f - mainBody.Rotation);
+				grenadeSprite.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), mainBody.Rotation);
 			}
 		}
 	}

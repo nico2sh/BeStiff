@@ -61,7 +61,7 @@ namespace Be_Stiff.WorldObjects.Props
 
 		public override void Update()
 		{
-			spritePieceVariables.rotation = 0f - bodyPiece.Rotation;
+			spritePieceVariables.rotation = bodyPiece.Rotation;
 			if (touchCount >= 3)
 			{
 				bodyPiece.FixtureList[0].IsSensor = true;

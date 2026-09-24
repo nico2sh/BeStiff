@@ -201,8 +201,8 @@ namespace Be_Stiff.WorldObjects.Props
 
 		public override void Update()
 		{
-			spriteVariables.rotation = 0f - mainBody.Rotation;
-			shadowHull[0].Angle = 0f - mainBody.Rotation;
+			spriteVariables.rotation = mainBody.Rotation;
+			shadowHull[0].Angle = mainBody.Rotation;
 			shadowHull[0].Position = GameElementsControl.ConvertWorldToScreen(mainBody.Position);
 			Vector2 v = GameElementsControl.ConvertWorldToScreen(joint1.WorldAnchorB - joint1.WorldAnchorA);
 			Vector2 v2 = GameElementsControl.ConvertWorldToScreen(joint2.WorldAnchorB - joint2.WorldAnchorA);

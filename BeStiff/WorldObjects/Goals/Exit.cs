@@ -48,7 +48,7 @@ namespace Be_Stiff.WorldObjects.Goals
 
 		public override void Draw()
 		{
-			exitSprite.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), 0f - mainBody.Rotation);
+			exitSprite.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), mainBody.Rotation);
 		}
 
 		public void DrawHull()

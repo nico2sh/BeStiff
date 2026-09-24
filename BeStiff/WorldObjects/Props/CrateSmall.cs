@@ -140,7 +140,7 @@ namespace Be_Stiff.WorldObjects.Props
 
 		public override void Draw()
 		{
-			spriteCrate.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), 0f - mainBody.Rotation, spriteEffect);
+			spriteCrate.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), mainBody.Rotation, spriteEffect);
 		}
 	}
 }

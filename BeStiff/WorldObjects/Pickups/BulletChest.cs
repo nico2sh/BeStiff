@@ -89,11 +89,11 @@ namespace Be_Stiff.WorldObjects.Pickups
 		{
 			if (Active)
 			{
-				bulletChestSprite.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), 0f - mainBody.Rotation);
+				bulletChestSprite.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), mainBody.Rotation);
 			}
 			else
 			{
-				bulletChestEmptySprite.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), 0f - mainBody.Rotation);
+				bulletChestEmptySprite.Draw(GameElementsControl.ConvertWorldToScreen(mainBody.Position), mainBody.Rotation);
 			}
 		}
 	}

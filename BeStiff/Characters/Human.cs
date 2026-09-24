@@ -438,7 +438,7 @@ namespace Be_Stiff.Characters
 				}
 				currentEnergy = 0f;
 				state = StateEnum.Dead;
-				bloodBlow.Angle = 0f - bodyRect.Rotation - (float)Math.PI / 2f;
+				bloodBlow.Angle = bodyRect.Rotation - (float)Math.PI / 2f;
 				bloodBlow.Trigger(GameElementsControl.ConvertWorldToScreen(bodyRect.Position));
 				Dispose();
 			}
@@ -517,7 +517,7 @@ namespace Be_Stiff.Characters
 
 		public void BloodyDie()
 		{
-			bloodBlow.Angle = 0f - bodyRect.Rotation - (float)Math.PI / 2f;
+			bloodBlow.Angle = bodyRect.Rotation - (float)Math.PI / 2f;
 			bloodBlow.Trigger(GameElementsControl.ConvertWorldToScreen(bodyRect.Position));
 			Die();
 		}

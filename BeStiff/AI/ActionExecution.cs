@@ -168,7 +168,10 @@ namespace Be_Stiff.AI
 				{
 					if (enemy.Landed())
 					{
-						Vector2 point2 = portal.ActionToPerform.Side + enemy.FeetPosition;
+						// The level stores the relative offset with +Y up (the original
+						// y-up world); flip it for the y-down world.
+						Vector2 offset = portal.ActionToPerform.Side;
+						Vector2 point2 = new Vector2(offset.X, -offset.Y) + enemy.FeetPosition;
 						enemy.JumpTo(ref point2);
 						performingAction = true;
 					}
