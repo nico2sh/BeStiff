@@ -347,13 +347,47 @@ namespace Be_Stiff.AI
 			number = touchingObjectsNum;
 		}
 
+		// Set once the brain has reacted to the hero's death.
+		private bool heroDeathHandled;
+
+		/// <summary>
+		/// The hero died: drop the alert and any chase, and go back to patrolling
+		/// instead of running to (or hitting) the body.
+		/// </summary>
+		private void ForgetHero()
+		{
+			alertLevel = 0;
+			timeAlerted = 0.0;
+			aimingAtHero = false;
+			hasToShoot = false;
+			relativeVisibleHeroPosition = Vector2.Zero;
+			if (currentBrainState == 1 || currentBrainState == 4 || currentBrainState == 5)
+			{
+				MarkArrived();
+				currentBrainState = 2;
+				brainStates[currentBrainState].Init();
+			}
+		}
+
 		public void Update()
 		{
-			Vector2 centerPosition = GameElementsControl.Hero.GetCenterPosition();
-			if ((centerPosition - owner.Position).Length() < 13f)
+			if (GameElementsControl.Hero.IsDead())
 			{
-				Vector2[] lineOfSight = GameElementsControl.Hero.GetLineOfSight();
-				RegisterHeroPosition(centerPosition, lineOfSight);
+				if (!heroDeathHandled)
+				{
+					heroDeathHandled = true;
+					ForgetHero();
+				}
+			}
+			else
+			{
+				heroDeathHandled = false;
+				Vector2 centerPosition = GameElementsControl.Hero.GetCenterPosition();
+				if ((centerPosition - owner.Position).Length() < 13f)
+				{
+					Vector2[] lineOfSight = GameElementsControl.Hero.GetLineOfSight();
+					RegisterHeroPosition(centerPosition, lineOfSight);
+				}
 			}
 			if (hasToShoot)
 			{

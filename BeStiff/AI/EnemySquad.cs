@@ -171,6 +171,12 @@ namespace Be_Stiff.AI
 
 		public void Update()
 		{
+			if (GameElementsControl.Hero.IsDead())
+			{
+				// Nothing left to hunt: members go back to their own routines.
+				Dissolve();
+				return;
+			}
 			if (!ordersGiven && GiveOrders())
 			{
 				ordersGiven = true;
