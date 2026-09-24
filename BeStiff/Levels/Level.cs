@@ -133,7 +133,7 @@ namespace Be_Stiff.Levels
 			ConvertUnits.SetDisplayUnitToSimUnitRatio(ogmoLevel.LegacyScale > 1 ? 24f : 48f);
 			GameElementsControl.RegisterTemplateSizes(ogmoLevel.Project, ogmoLevel.LegacyScale > 1);
 			OgmoObject[] objects = ogmoLevel.GetLayer<OgmoObjectLayer>("objects").Objects;
-			if (Environment.GetEnvironmentVariable("BESTIFF_DUMP") != null)
+			if (DebugFlags.Dump)
 			{
 				Console.Error.WriteLine($"Level {ogmoLevel.Width}x{ogmoLevel.Height}");
 				foreach (var t in ogmoLevel.Project.ObjectTemplates)
@@ -216,7 +216,7 @@ namespace Be_Stiff.Levels
 					EnemyStick enemyStick = new EnemyStick();
 					enemyStick.LoadFromOgmo(ogmoObject);
 				}
-				if (ogmoObject.Name.Equals("Cannon") && Environment.GetEnvironmentVariable("BESTIFF_NO_CANNON") == null)
+				if (ogmoObject.Name.Equals("Cannon") && !DebugFlags.NoCannon)
 				{
 					WallCannon wallCannon = new WallCannon();
 					wallCannon.LoadFromOgmo(ogmoObject);
@@ -354,7 +354,7 @@ namespace Be_Stiff.Levels
 				}
 			}
 			int[,] rawData = ogmoLevel.GetLayer<OgmoGridLayer>("floors").RawData;
-			if (Environment.GetEnvironmentVariable("BESTIFF_DUMP") != null)
+			if (DebugFlags.Dump)
 			{
 				int gs = ogmoLevel.GetLayer<OgmoGridLayer>("floors").EffectiveGridSize;
 				Console.Error.WriteLine($"GridLayer floors: {rawData.GetLength(0)}x{rawData.GetLength(1)} gridSize={gs}");

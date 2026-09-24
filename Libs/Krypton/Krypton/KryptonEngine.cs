@@ -32,6 +32,13 @@ namespace Krypton
 		public RenderTarget2D mMap;
 		private int debugFrames;
 
+		// Debug switches (see the game's README), read once instead of per frame.
+		private static readonly bool DebugDump = System.Environment.GetEnvironmentVariable("BESTIFF_DUMP") != null;
+
+		private static readonly bool DebugFlipScissor = System.Environment.GetEnvironmentVariable("BESTIFF_KR_FLIPSCISSOR") != null;
+
+		private static readonly string DebugDumpPrefix = System.Environment.GetEnvironmentVariable("BESTIFF_KRYPTON_DUMP");
+
 		private Color mAmbientColor = new Color(35, 35, 35);
 
 		private LightMapSize mLightMapSize = LightMapSize.Full;
@@ -211,7 +218,7 @@ namespace Krypton
 			base.GraphicsDevice.RasterizerState = RasterizerStateGetFromCullMode(mCullMode);
 			Vector2 targetSize = new Vector2(mMap.Width, mMap.Height);
 			debugFrames++;
-			bool dbg = System.Environment.GetEnvironmentVariable("BESTIFF_DUMP") != null && debugFrames <= 3;
+			bool dbg = DebugDump && debugFrames <= 3;
 			if (dbg) System.Console.Error.WriteLine($"Krypton: lights={mLights.Count} hulls={mHulls.Count} bounds={mBounds} map={mMap.Width}x{mMap.Height} ambient={AmbientColor} blur={mBluriness} technique={mEffect.Techniques["PointLight_Shadow_Fast"] != null}");
 			foreach (ILight2D mLight in mLights)
 			{
@@ -219,7 +226,7 @@ namespace Krypton
 				{
 					base.GraphicsDevice.Clear(ClearOptions.Stencil, Color.Black, 0f, 1);
 					Rectangle scissor = ScissorRectCreateForLight(mLight, matrix, targetSize);
-					if (System.Environment.GetEnvironmentVariable("BESTIFF_KR_FLIPSCISSOR") != null)
+					if (DebugFlipScissor)
 					{
 						scissor.Y = mMap.Height - scissor.Y - scissor.Height;
 					}
@@ -229,7 +236,7 @@ namespace Krypton
 				}
 				else if (dbg) System.Console.Error.WriteLine($"  light SKIPPED bounds={mLight.Bounds}");
 			}
-			string dumpPrefix = System.Environment.GetEnvironmentVariable("BESTIFF_KRYPTON_DUMP");
+			string dumpPrefix = DebugDumpPrefix;
 			if (dumpPrefix != null && debugFrames == 60)
 			{
 				using (var fs = System.IO.File.Create(dumpPrefix + "_postlight.png")) mMap.SaveAsPng(fs, mMap.Width, mMap.Height);

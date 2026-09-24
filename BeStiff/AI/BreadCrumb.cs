@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Be_Stiff.AI
 {
@@ -42,7 +41,6 @@ namespace Be_Stiff.AI
 
 		public void ToStack(ref Stack<Sector> path)
 		{
-			path.ToList();
 			BreadCrumb breadCrumb = this;
 			while (breadCrumb.next != null)
 			{

@@ -567,34 +567,8 @@ namespace Be_Stiff.Characters
 			}
 		}
 
-		protected override void FeetDetect()
-		{
-			double num = 0.0;
-			Vector2 vector = ((BaseAngle != 0f) ? bodyCircBottomSlide.Position : bodyCircBottom.Position);
-			Vector2 point = vector + new Vector2(0f, physWidth * 4f);
-			Vector2 po = Vector2.Zero;
-			Vector2 norm = Vector2.Zero;
-			float frac;
-			Fixture fixture = RayCastCallBacks.RayCastOneNoHuman(vector, point, out po, out norm, out frac);
-			if (fixture != null)
-			{
-				if (frac < 0.5f)
-				{
-					if (Math.Abs(norm.X) != 1f)
-					{
-						lastTimeOnFloor = GameElementsControl.CurrentTimeInMS;
-						currentTimeOnFloor += GameElementsControl.LastFrameTimeInMS;
-					}
-					SetFloorWorldObject(fixture);
-				}
-				num = norm.GetAngle() + (float)Math.PI / 2f;
-			}
-			else
-			{
-				num = 0.0;
-			}
-			RotateByFloor(num);
-		}
+		// While lying down the hero rides the slide wheel, so detect the floor from it.
+		protected override Vector2 FeetRayOrigin => (BaseAngle != 0f) ? bodyCircBottomSlide.Position : bodyCircBottom.Position;
 
 		protected override void StateDead()
 		{

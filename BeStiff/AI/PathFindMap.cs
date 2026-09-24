@@ -12,6 +12,22 @@ namespace Be_Stiff.AI
 
 		private MinHeap<BreadCrumb> _openList;
 
+		// Breadcrumbs reused across searches instead of allocated per search.
+		private readonly List<BreadCrumb> _crumbPool = new List<BreadCrumb>();
+
+		private int _crumbsUsed;
+
+		private BreadCrumb RentCrumb(Sector sector)
+		{
+			if (_crumbsUsed == _crumbPool.Count)
+			{
+				_crumbPool.Add(new BreadCrumb());
+			}
+			BreadCrumb crumb = _crumbPool[_crumbsUsed++];
+			crumb.ClearAndSet(sector);
+			return crumb;
+		}
+
 		public PathFindMap()
 		{
 			_sectors = new Dictionary<string, Sector>();
@@ -98,9 +114,10 @@ namespace Be_Stiff.AI
 			}
 			_openList.Clear();
 			_brWorld.Clear();
-			BreadCrumb breadCrumb = new BreadCrumb(start);
+			_crumbsUsed = 0;
+			BreadCrumb breadCrumb = RentCrumb(start);
 			breadCrumb.cost = 0f;
-			BreadCrumb breadcrumb = new BreadCrumb(end);
+			BreadCrumb breadcrumb = RentCrumb(end);
 			_brWorld.Add(start.Name, breadCrumb);
 			_openList.Add(breadCrumb);
 			while (_openList.Count > 0)
@@ -120,7 +137,7 @@ namespace Be_Stiff.AI
 					}
 					if (!_brWorld.TryGetValue(destinationSector.Name, out var value))
 					{
-						value = new BreadCrumb(destinationSector);
+						value = RentCrumb(destinationSector);
 						_brWorld.Add(destinationSector.Name, value);
 					}
 					if (value.onClosedList)

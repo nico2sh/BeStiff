@@ -247,6 +247,7 @@ namespace Be_Stiff.Levels
 			grayShadowEffect = GameScreen.Content.Load<Effect>("effects\\grayshadow");
 			alphaNoisesEffect = GameScreen.Content.Load<Effect>("effects\\alphanoises");
 			heroDrawEffect = GameScreen.Content.Load<Effect>("effects\\herodraw");
+			CacheEffectParameters();
 		}
 
 		public static void Unload()
@@ -374,14 +375,14 @@ namespace Be_Stiff.Levels
 			float dt = (float)lastFrameGameTimeInMs * 0.001f;
 			world.Step(dt);
 			physicsFrames++;
-			if (DebugDeathLog && hero != null && hero.IsDead() && physicsFrames % 10 == 0)
+			if (DebugFlags.DeathLog && hero != null && hero.IsDead() && physicsFrames % 10 == 0)
 				Console.Error.WriteLine($"  dead f{physicsFrames} rot={hero.MainBody.Rotation:F2} angVel={hero.MainBody.AngularVelocity:F2} pos={hero.MainBody.Position} vel={hero.MainBody.LinearVelocity} awake={hero.MainBody.Awake} fixedRot={hero.MainBody.FixedRotation} inertia={hero.MainBody.Inertia:F2}");
-			if (DebugJumpFrame > 0 && physicsFrames == DebugJumpFrame && hero != null)
+			if (DebugFlags.JumpFrame > 0 && physicsFrames == DebugFlags.JumpFrame && hero != null)
 			{
 				Vector2 up = new Vector2(0f, -hero.MainBody.Mass * 12f);
 				hero.MainBody.ApplyLinearImpulse(ref up); // debug: scripted jump
 			}
-			if (DebugGirderLog && physicsFrames % 15 == 0)
+			if (DebugFlags.GirderLog && physicsFrames % 15 == 0)
 			{
 				foreach (var wo in worldShadowObjects.Values)
 				{
@@ -389,11 +390,11 @@ namespace Be_Stiff.Levels
 						Console.Error.WriteLine($"  girder f{physicsFrames} pos={g.MainBody.Position} rot={g.MainBody.Rotation:F2} vel={g.MainBody.LinearVelocity} awake={g.MainBody.Awake} repairs={world.NonFiniteRepairs} hero={hero.Position} {g.DebugRopes()}");
 				}
 			}
-			if (DebugKillFrame > 0 && physicsFrames == DebugKillFrame && hero != null && !hero.IsDead())
+			if (DebugFlags.KillFrame > 0 && physicsFrames == DebugFlags.KillFrame && hero != null && !hero.IsDead())
 			{
 				hero.BloodyDie(); // debug: ragdoll test
 			}
-			if (DebugKillEnemyFrame > 0 && physicsFrames == DebugKillEnemyFrame)
+			if (DebugFlags.KillEnemyFrame > 0 && physicsFrames == DebugFlags.KillEnemyFrame)
 			{
 				enemiesControl.DebugKillAll(); // debug: enemy ragdoll test
 			}
@@ -512,6 +513,7 @@ namespace Be_Stiff.Levels
 				worldShadowObjects.Remove(item2);
 			}
 			worldObjectRemoveQueue.Clear();
+			worldShadowObjectRemoveQueue.Clear();
 		}
 
 		public static Vector2 GetScreenCenter()

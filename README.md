@@ -84,7 +84,7 @@ Debug switches (environment variables; "set" means any value):
 | `BESTIFF_KEYS=<spec>` | Scripted input: hold keys during frame ranges, e.g. `100-150:D;200-230:Space,A` (frames counted from the first update, key names from `Keys`) |
 | `BESTIFF_SHOT=<png>` | Save a screenshot (plus render targets, like `F12`) to that path at frame `BESTIFF_SHOT_FRAME` |
 | `BESTIFF_SHOT_FRAME=<n>` | Frame for `BESTIFF_SHOT` (default 180) |
-| `BESTIFF_DUMP` | Print diagnostics to stderr: level/grid scale, sprite scales, bones, texture regions, enemies, elevators, first Krypton light passes |
+| `BESTIFF_DUMP` | Print diagnostics to stderr: level/grid scale, sprite scales, bones, texture regions, enemies, decals, bad platform/elevator velocities, first Krypton light passes |
 | `BESTIFF_NO_CANNON` | Don't spawn wall cannons |
 | `BESTIFF_JUMP_FRAME=<n>` | Apply an upward impulse to the hero at physics frame n |
 | `BESTIFF_KILL_FRAME=<n>` | Kill the hero (ragdoll death) at physics frame n |

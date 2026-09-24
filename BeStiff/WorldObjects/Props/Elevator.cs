@@ -28,25 +28,7 @@ namespace Be_Stiff.WorldObjects.Props
 
 		private Fixture fixtureFloor;
 
-		private Vector2[] path;
-
-		private float speed;
-
-		private float deceleration;
-
-		private int nextPathPosition;
-
-		private int currentPathPosition;
-
-		private int pathForward;
-
-		private double stopTime;
-
-		private double estimatedArriveTime;
-
-		private bool stopped;
-
-		private int elevatorSoundIndex;
+		private PathMover mover;
 
 		private GameSprite elevatorSprite;
 
@@ -84,23 +66,9 @@ namespace Be_Stiff.WorldObjects.Props
 			base.Name = obj.GetValue<OgmoStringValue>("ID").Value;
 			WorldScaledOgmoObject worldScaledOgmoObject = new WorldScaledOgmoObject(obj);
 			shadowHull = new ShadowHull[2];
-			path = new Vector2[worldScaledOgmoObject.Nodes.Count() + 1];
-			ref Vector2 reference = ref path[0];
-			reference = worldScaledOgmoObject.Position;
-			speed = obj.GetValue<OgmoNumberValue>("speed").Value;
-			deceleration = speed * speed / 4f;
+			Vector2[] path = PathMover.BuildPath(worldScaledOgmoObject);
+			float speed = obj.GetValue<OgmoNumberValue>("speed").Value;
 			bool value = obj.GetValue<OgmoBooleanValue>("Light").Value;
-			for (int i = 0; i < worldScaledOgmoObject.Nodes.Count(); i++)
-			{
-				ref Vector2 reference2 = ref path[i + 1];
-				reference2 = worldScaledOgmoObject.Nodes[i].Position;
-			}
-			currentPathPosition = 0;
-			nextPathPosition = 1;
-			pathForward = 1;
-			stopTime = 0.0;
-			estimatedArriveTime = 0.0;
-			stopped = false;
 			mainBody = BodyFactory.CreateBody(GameElementsControl.World);
 			mainBody.BodyType = BodyType.Kinematic;
 			mainBody.Position = worldScaledOgmoObject.Position;
@@ -167,19 +135,20 @@ namespace Be_Stiff.WorldObjects.Props
 			{
 				GameElementsControl.Krypton.Lights.Add(elevatorLight);
 			}
-			elevatorSoundIndex = -1;
 			GameElementsControl.ScreenManager.AudioManager.LoadSound("elevatorDing", "audio\\noises\\elevatorDing");
 			GameElementsControl.ScreenManager.AudioManager.LoadSound("elevatorShaft", "audio\\noises\\elevatorShaft");
-			estimatedArriveTime = ((path[currentPathPosition] - path[nextPathPosition]).Length() - 4f) / speed;
-			estimatedArriveTime += 2.0 * Math.Sqrt(4f / deceleration);
-			estimatedArriveTime = GameElementsControl.CurrentTimeInMS + estimatedArriveTime * 1000.0 + 2000.0;
+			mover = new PathMover(mainBody, path, speed, distanceToDecelerate, timeInStop, "elevatorShaft", startStopped: false);
+			mover.Arrived += delegate
+			{
+				GameElementsControl.NoiseManager.AddNoise("elevatorDing", MainBody.Position);
+			};
 			GameElementsControl.AddShadowCasterWorldObject(this);
 			return true;
 		}
 
 		public void AddExitPortal(Portal enterPortal)
 		{
-			Vector2 vector = path[enterPortal.ActionToPerform.RefNumber];
+			Vector2 vector = mover.PathPoint(enterPortal.ActionToPerform.RefNumber);
 			float num = ((Math.Sign((enterPortal.Position - vector).X) > 0) ? enterPortal.Width : 0f);
 			PortalAction portalAction = new PortalAction("ExitElevator", new Vector2(enterPortal.Position.X + num, enterPortal.ActionToPerform.Side.Y), this);
 			portalAction.RefNumber = enterPortal.ActionToPerform.RefNumber;
@@ -187,109 +156,21 @@ namespace Be_Stiff.WorldObjects.Props
 			sector.addPortal(portal);
 		}
 
-		private int debugFrame;
+		private Vector2 lastPosition;
 
 		public override void Update()
 		{
-			if (Environment.GetEnvironmentVariable("BESTIFF_DUMP") != null && base.Name == "Elevator2" && debugFrame < 12)
+			mover.Update();
+			if (mainBody.Position == lastPosition)
 			{
-				for (var edge = mainBody.ContactList; edge != null; edge = edge.Next)
-				{
-					var other = edge.Other;
-					string owner = "?";
-					foreach (var f in other.FixtureList) if (f.UserData is WorldObjectData w && w.Object != null) owner = w.Object.GetType().Name + " '" + w.Object.Name + "'";
-					Console.Error.WriteLine($"  Elevator2 f{debugFrame} contact with {owner} type={other.BodyType} pos={other.Position} vel={other.LinearVelocity} touching={edge.Contact.IsTouching()} manifoldPts={edge.Contact.Manifold.PointCount}");
-				}
+				return;
 			}
-			if (Environment.GetEnvironmentVariable("BESTIFF_DUMP") != null && base.Name == "Elevator2" && debugFrame++ < 12)
-				Console.Error.WriteLine($"Elevator2 f{debugFrame} pos={mainBody.Position} vel={mainBody.LinearVelocity} stopped={stopped} cur={currentPathPosition} next={nextPathPosition} pathLen={path.Length} joints={(mainBody.JointList != null)} contacts={(mainBody.ContactList != null)} time={GameElementsControl.CurrentTimeInMS} arrive={estimatedArriveTime}");
-			if (stopTime + 2000.0 <= GameElementsControl.CurrentTimeInMS)
-			{
-				if (MoveToPoint(path[nextPathPosition], path[currentPathPosition]))
-				{
-					int num = path.Count() - 1;
-					int num2 = currentPathPosition + pathForward;
-					if (num2 < 0 || num2 > num)
-					{
-						pathForward = -pathForward;
-					}
-					nextPathPosition = (int)MathHelper.Clamp(currentPathPosition + pathForward, 0f, num);
-				}
-				else
-				{
-					stopped = false;
-					if (elevatorSoundIndex != -1)
-					{
-						float num3 = MathHelper.Clamp(1f - (GameElementsControl.Hero.Position - MainBody.Position).Length() / NoiseManager.MaxDistanceToHear, 0f, 1f);
-						GameElementsControl.ScreenManager.AudioManager.SoundLoopVolume(elevatorSoundIndex, num3 * num3);
-					}
-				}
-			}
-			else
-			{
-				stopped = true;
-			}
+			lastPosition = mainBody.Position;
+			sector.Position = mainBody.Position;
+			safeZone.Position = mainBody.Position + new Vector2(0.5f, 0f);
 			elevatorLight.Position = GameElementsControl.ConvertWorldToScreen(CenterPosition);
 			shadowHull[0].Position = GameElementsControl.ConvertWorldToScreen(mainBody.Position);
 			shadowHull[1].Position = GameElementsControl.ConvertWorldToScreen(mainBody.Position);
-		}
-
-		private bool MoveToPoint(Vector2 destPoint, Vector2 originPoint)
-		{
-			if (GameElementsControl.LastFrameTimeInMS <= 0.0)
-			{
-				// Time is frozen (e.g. the "get ready" box); the speed maths below
-				// divides by the frame time and would produce NaN velocities.
-				return false;
-			}
-			float num = (mainBody.Position - destPoint).Length();
-			float num2 = (mainBody.Position - originPoint).Length();
-			Vector2 vector = VectorUtil.SafeNormalize(destPoint - mainBody.Position);
-			_ = (double)(deceleration * 1000f) / GameElementsControl.LastFrameTimeInMS;
-			if (num > 0f)
-			{
-				if (elevatorSoundIndex == -1)
-				{
-					elevatorSoundIndex = GameElementsControl.ScreenManager.AudioManager.PlaySoundLoop("elevatorShaft");
-				}
-				float num3 = mainBody.LinearVelocity.Length();
-				float num4 = (float)((double)(num * 1000f) / GameElementsControl.LastFrameTimeInMS);
-				if (!(num < 2f))
-				{
-					num3 = ((num2 < 2f) ? ((num2 != 0f) ? (mainBody.LinearVelocity.Length() + deceleration * ((float)GameElementsControl.LastFrameTimeInMS / 1000f)) : (deceleration * ((float)GameElementsControl.LastFrameTimeInMS / 1000f))) : ((!(num3 > num4)) ? speed : num4));
-				}
-				else
-				{
-					num3 = mainBody.LinearVelocity.Length() - deceleration * ((float)GameElementsControl.LastFrameTimeInMS / 1000f);
-					if (num3 < 0f)
-					{
-						num3 = num4;
-					}
-				}
-				sector.Position = mainBody.Position;
-				safeZone.Position = mainBody.Position + new Vector2(0.5f, 0f);
-				if (Environment.GetEnvironmentVariable("BESTIFF_DUMP") != null && (float.IsNaN(num3) || float.IsInfinity(num3) || float.IsNaN(vector.X)))
-					Console.Error.WriteLine($"Elevator '{base.Name}' bad velocity: num={num} num2={num2} num3={num3} num4={num4} vector={vector} dest={destPoint} origin={originPoint} pos={mainBody.Position} vel={mainBody.LinearVelocity} speed={speed} decel={deceleration} frameMs={GameElementsControl.LastFrameTimeInMS}");
-				mainBody.LinearVelocity = vector * num3;
-				return false;
-			}
-			if (currentPathPosition != nextPathPosition)
-			{
-				stopped = true;
-				stopTime = estimatedArriveTime;
-				estimatedArriveTime = ((path[currentPathPosition] - path[nextPathPosition]).Length() - 4f) / speed;
-				estimatedArriveTime += 2.0 * Math.Sqrt(4f / deceleration);
-				estimatedArriveTime = stopTime + estimatedArriveTime * 1000.0 + 2000.0;
-				currentPathPosition = nextPathPosition;
-				mainBody.LinearVelocity = Vector2.Zero;
-				if (elevatorSoundIndex != -1)
-				{
-					GameElementsControl.ScreenManager.AudioManager.StopSoundLoop(elevatorSoundIndex);
-					elevatorSoundIndex = -1;
-				}
-				GameElementsControl.NoiseManager.AddNoise("elevatorDing", MainBody.Position);
-			}
-			return true;
 		}
 
 		public bool IsInside(ref Vector2 pos)
@@ -299,11 +180,7 @@ namespace Be_Stiff.WorldObjects.Props
 
 		public int CurrentFloor()
 		{
-			if (!stopped)
-			{
-				return -1;
-			}
-			return currentPathPosition;
+			return mover.CurrentFloor;
 		}
 
 		public override bool CanHanged()

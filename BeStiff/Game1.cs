@@ -33,7 +33,7 @@ namespace Be_Stiff
 		protected override void Initialize()
 		{
 			screenManager.AddScreen(new BackgroundScreen(), null);
-			string debugLevel = Environment.GetEnvironmentVariable("BESTIFF_LEVEL");
+			string debugLevel = DebugFlags.Level;
 			if (string.IsNullOrEmpty(debugLevel))
 			{
 				screenManager.AddScreen(new PressStartScreen(), null);
@@ -118,7 +118,7 @@ namespace Be_Stiff
 		/// </summary>
 		private void SaveDebugScreenshot()
 		{
-			string path = Environment.GetEnvironmentVariable("BESTIFF_SHOT");
+			string path = DebugFlags.Shot;
 			if (screenshotRequested)
 			{
 				screenshotRequested = false;
@@ -131,10 +131,7 @@ namespace Be_Stiff
 				{
 					return;
 				}
-				int frame = 180;
-				int.TryParse(Environment.GetEnvironmentVariable("BESTIFF_SHOT_FRAME"), out frame);
-				if (frame <= 0) frame = 180;
-				if (drawnFrames != frame)
+				if (drawnFrames != DebugFlags.ShotFrame)
 				{
 					return;
 				}

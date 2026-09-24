@@ -25,9 +25,6 @@ namespace Be_Stiff.Characters.States
 			eventsNumber = 0;
 		}
 
-		// Debug switch: log every state change to stderr.
-		private static readonly bool DebugStateLog = Environment.GetEnvironmentVariable("BESTIFF_STATE_LOG") != null;
-
 		protected virtual string DebugInfo()
 		{
 			return string.Empty;
@@ -68,7 +65,7 @@ namespace Be_Stiff.Characters.States
 		{
 			if (CurrentState.Update() && nextState != null)
 			{
-				if (DebugStateLog)
+				if (DebugFlags.StateLog)
 				{
 					Console.Error.WriteLine($"  state t={GameElementsControl.CurrentTimeInMS:F0} {CurrentState.GetType().Name} -> {nextState.GetType().Name} {DebugInfo()}");
 				}

@@ -107,7 +107,7 @@ namespace Be_Stiff.Levels
 				GameSprite value = new GameSprite(fromTexture);
 				value.TexturePath = texturePath;
 				value.Scale = LegacySpriteScale(texturePath, fromTexture);
-				if (value.Scale != 1f && Environment.GetEnvironmentVariable("BESTIFF_DUMP") != null)
+				if (value.Scale != 1f && DebugFlags.Dump)
 				{
 					Console.Error.WriteLine($"  sprite {textureName} ({texturePath}) {fromTexture.Width}x{fromTexture.Height} drawn at x{value.Scale}");
 				}

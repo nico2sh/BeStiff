@@ -95,26 +95,6 @@ namespace Be_Stiff.WorldObjects
 			return true;
 		}
 
-		public override void StepOver(Vector2 position, WorldObjectType type, bool running)
-		{
-			switch (type)
-			{
-			case WorldObjectType.Human:
-				GameElementsControl.NoiseManager.AddVisualNoise("stepWalking", position);
-				break;
-			case WorldObjectType.Hero:
-				if (running)
-				{
-					GameElementsControl.NoiseManager.AddVisualNoise("stepWalkingHero", position);
-				}
-				else
-				{
-					GameElementsControl.NoiseManager.AddNoise("step", position);
-				}
-				break;
-			}
-		}
-
 		public override void Draw()
 		{
 		}

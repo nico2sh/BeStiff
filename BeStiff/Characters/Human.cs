@@ -609,10 +609,13 @@ namespace Be_Stiff.Characters
 			}
 		}
 
-		protected virtual void FeetDetect()
+		/// <summary>Where the floor-detection ray starts (the feet wheel by default).</summary>
+		protected virtual Vector2 FeetRayOrigin => bodyCircBottom.Position;
+
+		protected void FeetDetect()
 		{
 			double num = 0.0;
-			Vector2 position = bodyCircBottom.Position;
+			Vector2 position = FeetRayOrigin;
 			Vector2 point = position + new Vector2(0f, physWidth * 4f);
 			Vector2 norm = Vector2.Zero;
 			Vector2 po = Vector2.Zero;

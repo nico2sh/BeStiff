@@ -92,7 +92,7 @@ namespace Be_Stiff.Screens
 		{
 			// Debug: when a level is auto-started (BESTIFF_LEVEL), skip the
 			// "get ready" confirmation so unattended test runs proceed.
-			bool autoStart = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("BESTIFF_LEVEL"));
+			bool autoStart = !string.IsNullOrEmpty(DebugFlags.Level);
 			if (input.IsMenuSelect(base.ControllingPlayer, out var playerIndex) || autoStart)
 			{
 				if (this.Start != null)

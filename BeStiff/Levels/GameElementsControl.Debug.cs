@@ -16,16 +16,6 @@ namespace Be_Stiff.Levels
 	{
 		private static bool nanReported;
 
-		// Debug switches, read once instead of on every physics frame.
-		private static readonly bool DebugDeathLog = Environment.GetEnvironmentVariable("BESTIFF_DEATH_LOG") != null;
-
-		private static readonly bool DebugGirderLog = Environment.GetEnvironmentVariable("BESTIFF_GIRDER_LOG") != null;
-
-		private static readonly int DebugJumpFrame = int.TryParse(Environment.GetEnvironmentVariable("BESTIFF_JUMP_FRAME"), out int f) ? f : 0;
-
-		private static readonly int DebugKillFrame = int.TryParse(Environment.GetEnvironmentVariable("BESTIFF_KILL_FRAME"), out int f) ? f : 0;
-
-		private static readonly int DebugKillEnemyFrame = int.TryParse(Environment.GetEnvironmentVariable("BESTIFF_KILL_ENEMY_FRAME"), out int f) ? f : 0;
 		private static int physicsFrames;
 
 		/// <summary>Debug helper: describes the hero's state.</summary>

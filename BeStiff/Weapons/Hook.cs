@@ -117,6 +117,7 @@ namespace Be_Stiff.Weapons
 		public Hook(Arm arm, Hero hero)
 			: base(arm)
 		{
+			collectHookableFixture = CollectHookableFixture;
 			base.WeaponType = WeaponType.Hook;
 			owner = hero;
 		}
@@ -184,6 +185,18 @@ namespace Be_Stiff.Weapons
 			hasTarget = false;
 			hadTarget = false;
 			candidateFixtures = new List<Fixture>();
+		}
+
+		// Cached so the per-frame aim query doesn't allocate a new delegate.
+		private readonly Func<Fixture, bool> collectHookableFixture;
+
+		private bool CollectHookableFixture(Fixture fixture)
+		{
+			if (fixture.UserData is WorldObjectData worldObjectData && worldObjectData.Object.Name != "Hero" && worldObjectData.Object.CanBeHooked() && !fixture.IsSensor)
+			{
+				candidateFixtures.Add(fixture);
+			}
+			return true;
 		}
 
 		public void HandleInput(InputHelper input, PlayerIndex? playerIndex)
@@ -459,14 +472,7 @@ namespace Be_Stiff.Weapons
 			{
 				AABB aabb = new AABB(targetPosition, 0.5f, 0.5f);
 				candidateFixtures.Clear();
-				GameElementsControl.World.QueryAABB(delegate(Fixture fixture)
-				{
-					if (fixture.UserData is WorldObjectData worldObjectData && worldObjectData.Object.Name != "Hero" && worldObjectData.Object.CanBeHooked() && !fixture.IsSensor)
-					{
-						candidateFixtures.Add(fixture);
-					}
-					return true;
-				}, ref aabb);
+				GameElementsControl.World.QueryAABB(collectHookableFixture, ref aabb);
 				int num = Math.Sign(targetPosition.X - ownerArm.Position.X);
 				Vector2 vector2 = new Vector2(0f, float.MaxValue);
 				bool flag = false;

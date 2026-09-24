@@ -57,6 +57,17 @@ namespace Be_Stiff.Graphics
 
 		public Vector2 CurrentSize => Vector2.Multiply(HalfSize * 2f, 1f / _currentZoom);
 
+		/// <summary>
+		/// World area on screen, in display units, grown by <paramref name="margin"/>
+		/// pixels on each side. Used to skip drawing what the camera can't see.
+		/// </summary>
+		public Rectangle VisibleArea(int margin)
+		{
+			Vector2 size = CurrentSize;
+			Vector2 topLeft = Position - size / 2f;
+			return new Rectangle((int)topLeft.X - margin, (int)topLeft.Y - margin, (int)size.X + 2 * margin, (int)size.Y + 2 * margin);
+		}
+
 		public Vector2 Position
 		{
 			get

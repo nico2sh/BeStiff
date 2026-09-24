@@ -34,7 +34,7 @@ namespace Be_Stiff.Screens
 			GameElementsControl.Initialize(this);
 			GameElementsControl.LoadContent();
 			GameElementsControl.LoadLevel("Levels\\" + levelName);
-			string debugPos = Environment.GetEnvironmentVariable("BESTIFF_HERO_POS");
+			string debugPos = DebugFlags.HeroPos;
 			if (!string.IsNullOrEmpty(debugPos))
 			{
 				string[] parts = debugPos.Split(',');
@@ -49,6 +49,9 @@ namespace Be_Stiff.Screens
 
 		public override void UnloadContent()
 		{
+			// Looping level sounds (elevators, platforms) would otherwise keep
+			// playing after the level is left.
+			base.ScreenManager.AudioManager.StopSoundLoops();
 			GameElementsControl.Unload();
 			content.Unload();
 		}
@@ -56,6 +59,9 @@ namespace Be_Stiff.Screens
 		public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
 		{
 			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+			// Level machinery only updates while gameplay is active, so hold its
+			// looping sounds while a menu or end screen covers the level.
+			base.ScreenManager.AudioManager.PauseSoundLoops(!base.IsActive);
 			if (base.IsActive && started)
 			{
 				GameElementsControl.Update(gameTime);

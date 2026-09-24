@@ -16,7 +16,7 @@ namespace Be_Stiff.Graphics
 			texture = tileLayer.Tilesets[0].Texture;
 			rectangles = new Dictionary<Rectangle, List<Rectangle>>();
 			OgmoTile[] tiles = tileLayer.Tiles;
-			bool dump = System.Environment.GetEnvironmentVariable("BESTIFF_DUMP") != null;
+			bool dump = DebugFlags.Dump;
 			if (dump) System.Console.Error.WriteLine($"TileLayer {tileLayer.Name}: {tiles.Length} tiles, tileset tex {texture.Width}x{texture.Height}, sources={tileLayer.Tilesets[0].Sources.Count}");
 			foreach (OgmoTile ogmoTile in tiles)
 			{
@@ -42,11 +42,15 @@ namespace Be_Stiff.Graphics
 
 		public void Draw()
 		{
-			foreach (Rectangle key in rectangles.Keys)
+			Rectangle visible = GameElementsControl.Camera.VisibleArea(16);
+			foreach (KeyValuePair<Rectangle, List<Rectangle>> pair in rectangles)
 			{
-				foreach (Rectangle item in rectangles[key])
+				foreach (Rectangle item in pair.Value)
 				{
-					GameElementsControl.ScreenManager.SpriteBatch.Draw(texture, item, key, Color.White);
+					if (visible.Intersects(item))
+					{
+						GameElementsControl.ScreenManager.SpriteBatch.Draw(texture, item, pair.Key, Color.White);
+					}
 				}
 			}
 		}

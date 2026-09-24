@@ -17,7 +17,7 @@ namespace Be_Stiff
 		private static List<(int, int, Keys[])> Load()
 		{
 			var list = new List<(int, int, Keys[])>();
-			string spec = Environment.GetEnvironmentVariable("BESTIFF_KEYS");
+			string spec = DebugFlags.Keys;
 			if (string.IsNullOrEmpty(spec))
 			{
 				return list;

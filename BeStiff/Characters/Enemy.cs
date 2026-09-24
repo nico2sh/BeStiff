@@ -126,7 +126,7 @@ namespace Be_Stiff.Characters
 
 		public override void Update()
 		{
-			if (Environment.GetEnvironmentVariable("BESTIFF_DUMP") != null && base.Name == "Mik7" && debugFrames++ < 8)
+			if (DebugFlags.Dump && base.Name == "Mik7" && debugFrames++ < 8)
 				Console.Error.WriteLine($"Mik7 f{debugFrames} pos={Position} feet={FeetPosition} vel={MainBody.LinearVelocity} angVel={MainBody.AngularVelocity} rot={MainBody.Rotation} balanceMotor={balanceRevoluteJoint.MotorSpeed} wheelMotor={wheelRevoluteJoint.MotorSpeed} floorAngle={floorAngle} state={state} frameMs={GameElementsControl.LastFrameTimeInMS}");
 			if (!Disposed && (float.IsNaN(Position.X) || float.IsNaN(Position.Y)))
 			{

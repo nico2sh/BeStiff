@@ -56,6 +56,10 @@ namespace Be_Stiff.Audio
 
 		private SoundEffectInstance[] _playingSounds = new SoundEffectInstance[24];
 
+		// Which slots hold looping sounds (level machinery), so they can be
+		// paused with gameplay and stopped when the level is left.
+		private bool[] _isLoop = new bool[24];
+
 		private bool _isMusicPaused;
 
 		private bool _isFading;
@@ -241,6 +245,11 @@ namespace Be_Stiff.Audio
 
 		public int PlaySound(string soundName, float volume, float pitch, float pan)
 		{
+			return PlaySound(soundName, volume, pitch, pan, loop: false);
+		}
+
+		private int PlaySound(string soundName, float volume, float pitch, float pan, bool loop)
+		{
 			if (!_sounds.TryGetValue(soundName, out var value))
 			{
 				throw new ArgumentException($"Sound '{soundName}' not found");
@@ -252,6 +261,8 @@ namespace Be_Stiff.Audio
 				_playingSounds[availableSoundIndex].Volume = volume;
 				_playingSounds[availableSoundIndex].Pitch = pitch;
 				_playingSounds[availableSoundIndex].Pan = pan;
+				_playingSounds[availableSoundIndex].IsLooped = loop; // must be set before Play()
+				_isLoop[availableSoundIndex] = loop;
 				_playingSounds[availableSoundIndex].Play();
 				if (!base.Enabled)
 				{
@@ -263,14 +274,49 @@ namespace Be_Stiff.Audio
 
 		public int PlaySoundLoop(string soundName)
 		{
-			int result = PlaySound(soundName);
-			_ = -1;
-			return result;
+			return PlaySoundLoop(soundName, 1f);
+		}
+
+		public int PlaySoundLoop(string soundName, float volume)
+		{
+			return PlaySound(soundName, volume, 0f, 0f, loop: true);
+		}
+
+		/// <summary>Pauses or resumes every looping sound (e.g. while gameplay is covered by a menu).</summary>
+		public void PauseSoundLoops(bool paused)
+		{
+			for (int i = 0; i < _playingSounds.Length; i++)
+			{
+				if (!_isLoop[i] || _playingSounds[i] == null)
+				{
+					continue;
+				}
+				if (paused && _playingSounds[i].State == SoundState.Playing)
+				{
+					_playingSounds[i].Pause();
+				}
+				else if (!paused && _playingSounds[i].State == SoundState.Paused)
+				{
+					_playingSounds[i].Resume();
+				}
+			}
+		}
+
+		/// <summary>Stops every looping sound, leaving one-shots (e.g. menu sounds) playing.</summary>
+		public void StopSoundLoops()
+		{
+			for (int i = 0; i < _playingSounds.Length; i++)
+			{
+				if (_isLoop[i] && _playingSounds[i] != null)
+				{
+					_playingSounds[i].Stop();
+				}
+			}
 		}
 
 		public void StopSoundLoop(int soundIndex)
 		{
-			if (_playingSounds[soundIndex] != null && _playingSounds[soundIndex].State == SoundState.Playing)
+			if (soundIndex >= 0 && _playingSounds[soundIndex] != null && _playingSounds[soundIndex].State == SoundState.Playing)
 			{
 				_playingSounds[soundIndex].Stop();
 			}
@@ -278,7 +324,7 @@ namespace Be_Stiff.Audio
 
 		public void SoundLoopVolume(int soundIndex, float volume)
 		{
-			if (_playingSounds[soundIndex] != null)
+			if (soundIndex >= 0 && _playingSounds[soundIndex] != null)
 			{
 				_playingSounds[soundIndex].Volume = volume;
 			}
@@ -293,6 +339,7 @@ namespace Be_Stiff.Audio
 					_playingSounds[i].Stop();
 					_playingSounds[i].Dispose();
 					_playingSounds[i] = null;
+					_isLoop[i] = false;
 				}
 			}
 		}
@@ -305,6 +352,7 @@ namespace Be_Stiff.Audio
 				{
 					_playingSounds[i].Dispose();
 					_playingSounds[i] = null;
+					_isLoop[i] = false;
 				}
 			}
 			base.Update(gameTime);

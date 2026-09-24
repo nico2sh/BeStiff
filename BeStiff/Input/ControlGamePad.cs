@@ -171,9 +171,9 @@ namespace Be_Stiff.Input
 		{
 			if (controllingPlayer.HasValue)
 			{
-				if (!(GamePad.GetState(controllingPlayer.Value).ThumbSticks.Left.X >= 0.5f))
+				if (!(CurrentGamePadStates[(int)controllingPlayer.Value].ThumbSticks.Left.X >= 0.5f))
 				{
-					return GamePad.GetState(controllingPlayer.Value).DPad.Right == ButtonState.Pressed;
+					return CurrentGamePadStates[(int)controllingPlayer.Value].DPad.Right == ButtonState.Pressed;
 				}
 				return true;
 			}
@@ -184,9 +184,9 @@ namespace Be_Stiff.Input
 		{
 			if (controllingPlayer.HasValue)
 			{
-				if (!(GamePad.GetState(controllingPlayer.Value).ThumbSticks.Left.X <= -0.5f))
+				if (!(CurrentGamePadStates[(int)controllingPlayer.Value].ThumbSticks.Left.X <= -0.5f))
 				{
-					return GamePad.GetState(controllingPlayer.Value).DPad.Left == ButtonState.Pressed;
+					return CurrentGamePadStates[(int)controllingPlayer.Value].DPad.Left == ButtonState.Pressed;
 				}
 				return true;
 			}
@@ -197,9 +197,9 @@ namespace Be_Stiff.Input
 		{
 			if (controllingPlayer.HasValue)
 			{
-				if (!(GamePad.GetState(controllingPlayer.Value).ThumbSticks.Left.Y >= 0.5f))
+				if (!(CurrentGamePadStates[(int)controllingPlayer.Value].ThumbSticks.Left.Y >= 0.5f))
 				{
-					return GamePad.GetState(controllingPlayer.Value).DPad.Up == ButtonState.Pressed;
+					return CurrentGamePadStates[(int)controllingPlayer.Value].DPad.Up == ButtonState.Pressed;
 				}
 				return true;
 			}
@@ -210,9 +210,9 @@ namespace Be_Stiff.Input
 		{
 			if (controllingPlayer.HasValue)
 			{
-				if (!(GamePad.GetState(controllingPlayer.Value).ThumbSticks.Left.Y <= -0.5f))
+				if (!(CurrentGamePadStates[(int)controllingPlayer.Value].ThumbSticks.Left.Y <= -0.5f))
 				{
-					return GamePad.GetState(controllingPlayer.Value).DPad.Down == ButtonState.Pressed;
+					return CurrentGamePadStates[(int)controllingPlayer.Value].DPad.Down == ButtonState.Pressed;
 				}
 				return true;
 			}
@@ -224,7 +224,7 @@ namespace Be_Stiff.Input
 			if (controllingPlayer.HasValue)
 			{
 				PlayerIndex playerIndex;
-				if (GamePad.GetState(controllingPlayer.Value).ThumbSticks.Left.Y <= -0.5f || GamePad.GetState(controllingPlayer.Value).DPad.Down == ButtonState.Pressed)
+				if (CurrentGamePadStates[(int)controllingPlayer.Value].ThumbSticks.Left.Y <= -0.5f || CurrentGamePadStates[(int)controllingPlayer.Value].DPad.Down == ButtonState.Pressed)
 				{
 					return IsCurrentButtonPress(Globals.InputButtonJump, controllingPlayer, out playerIndex);
 				}

@@ -29,6 +29,18 @@ namespace Be_Stiff.AI
 
 		private Vector2 destinationPoint;
 
+		// Last start/end sector pair with no path between them, so an enemy
+		// chasing an unreachable target doesn't rerun the search every frame.
+		private Sector unreachableFrom;
+
+		private Sector unreachableTo;
+
+		// Portals can open later (elevators, platforms, broken walls), so the
+		// unreachable pair is retried after this much real time.
+		private const double UnreachableRetryMs = 250.0;
+
+		private double unreachableTime;
+
 		private Sector destinationSector;
 
 		private bool hasDestination;
@@ -622,6 +634,8 @@ namespace Be_Stiff.AI
 
 		public void Reset()
 		{
+			unreachableFrom = null;
+			unreachableTo = null;
 			alertLevel = 0;
 			aimingAtHero = false;
 			destinationPath.Clear();
@@ -663,9 +677,15 @@ namespace Be_Stiff.AI
 						MarkArrived();
 						return true;
 					}
-					if (start != end)
+					if (start != end && (start != unreachableFrom || end != unreachableTo || GameElementsControl.RealTimeInMS - unreachableTime > UnreachableRetryMs))
 					{
 						GameElementsControl.PathFindMap.GetPathFromTo(ref start, ref end, ref destinationPath);
+						if (destinationPath.Count == 0)
+						{
+							unreachableFrom = start;
+							unreachableTo = end;
+							unreachableTime = GameElementsControl.RealTimeInMS;
+						}
 					}
 				}
 			}
@@ -735,7 +755,7 @@ namespace Be_Stiff.AI
 			{
 				destinationPoint = newDestinationPoint;
 				destinationSector = GameElementsControl.PathFindMap.GetSectorAt(ref newDestinationPoint);
-				if (destinationPath.Count > 0 && destinationSector != destinationPath.First())
+				if (destinationPath.Count > 0 && destinationSector != destinationPath.Peek())
 				{
 					destinationPath.Clear();
 				}

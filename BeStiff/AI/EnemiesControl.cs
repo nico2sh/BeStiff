@@ -14,9 +14,9 @@ namespace Be_Stiff.AI
 
 		private Enemy[] squadCandidates;
 
-		private Vector3[] noises;
-
-		private int noisesNumber;
+		// Noises registered this frame. A list rather than a fixed array so a
+		// busy frame can't overflow it; cleared after the enemies have heard.
+		private List<Vector3> noises;
 
 		public EnemiesControl()
 		{
@@ -24,8 +24,7 @@ namespace Be_Stiff.AI
 			enemies = new List<Enemy>();
 			emptySquads = new Stack<EnemySquad>();
 			activeSquads = new List<EnemySquad>();
-			noises = new Vector3[10];
-			noisesNumber = 0;
+			noises = new List<Vector3>();
 		}
 
 		public void AddEnemy(Enemy enemy)
@@ -76,12 +75,14 @@ namespace Be_Stiff.AI
 				leader.Update();
 				if (!leader.IsDead())
 				{
-					for (int i = 0; i < noisesNumber; i++)
+					// Snapshot the count: reacting to a noise can register new ones,
+					// which this enemy must not hear again in the same pass.
+					int noiseCount = noises.Count;
+					for (int i = 0; i < noiseCount; i++)
 					{
 						Vector2 vector = new Vector2(noises[i].X, noises[i].Y);
 						float z = noises[i].Z;
-						(vector - leader.Position).Length();
-						if ((vector - leader.Position).Length() <= z)
+						if ((vector - leader.Position).LengthSquared() <= z * z)
 						{
 							leader.Brain.HearNoise(vector);
 						}
@@ -96,7 +97,7 @@ namespace Be_Stiff.AI
 					enemies.Remove(leader);
 				}
 			}
-			noisesNumber = 0;
+			noises.Clear();
 			for (int num2 = activeSquads.Count - 1; num2 >= 0; num2--)
 			{
 				EnemySquad enemySquad = activeSquads[num2];
@@ -116,7 +117,7 @@ namespace Be_Stiff.AI
 		{
 			if (newNoise.Z > 0f)
 			{
-				noises[noisesNumber++] = newNoise;
+				noises.Add(newNoise);
 			}
 		}
 
@@ -191,7 +192,7 @@ namespace Be_Stiff.AI
 
 		public void Draw()
 		{
-			bool dbg = Environment.GetEnvironmentVariable("BESTIFF_DUMP") != null && debugDrawCount++ % 120 == 0;
+			bool dbg = DebugFlags.Dump && debugDrawCount++ % 120 == 0;
 			foreach (Enemy enemy in enemies)
 			{
 				if (dbg) Console.Error.WriteLine($"  enemy {enemy.GetType().Name} '{enemy.Name}' dead={enemy.IsDead()} disposed={enemy.Disposed} pos={enemy.Position} screen={GameElementsControl.ConvertWorldToScreen(enemy.Position)}");
