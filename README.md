@@ -52,11 +52,32 @@ since the original project folder was lost.
   Krypton, ProjectMercury. `EasyStorage` is a rewrite on plain file IO
   (the original used the removed XNA Storage/GamerServices APIs); saves go
   to `~/.local/share/BeStiff/`.
+  `Nuclex.Support` and `Nuclex.UserInterface` (the GUI used by the animation
+  editor) are decompiled and rebuilt the same way; `Nuclex.Input` is a small
+  rewrite on MonoGame input (the original used Win32 message hooks and
+  DirectInput).
+- `Tools/AnimationEditor/` – the skeleton/animation editor used to author the
+  characters, decompiled and ported to MonoGame. It edits the XML projects in
+  `Animations/`.
+- `Animations/` – source animation projects: skeleton and animation XML,
+  per-bone sprites (PNG) and editor backgrounds.
 - `Tools/fxccs/` – tiny Windows-side helper that MonoGame 3.8.5's effect
   compiler invokes inside Wine but does not ship. Build output is copied to
   `~/.winemonogame/drive_c/fxccs.dll`.
 - `Tools/dx9dis.py` – DirectX 9 shader bytecode disassembler used to recover
   the game's pixel shaders from the compiled effects.
+
+## Animation editor
+
+```
+dotnet run --project Tools/AnimationEditor -- Animations/hero/test.xml
+```
+
+The optional argument is a project file to open at startup; otherwise use
+"Load Project". Projects saved on Windows still load: a base path that does
+not exist falls back to the project file's folder, and file names are matched
+regardless of case. F1–F6 toggle the debug views (listed on screen), F2
+switches between skeleton and animation editing.
 
 ## Building on Linux
 

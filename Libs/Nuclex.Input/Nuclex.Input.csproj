@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Replacement for the original Nuclex.Input, which read input through Win32
+    window message hooks and DirectInput (SlimDX). This keeps the public API
+    the Nuclex GUI uses, implemented on MonoGame's cross-platform input.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5.1" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

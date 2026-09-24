@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!-- The skin (textures, fonts, layout) is embedded as byte[] resources. -->
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <NoWarn>CS0618;CS0612;CS0067;CS0168;CS0169;CS0649;CS0414;CS8981</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5.1" PrivateAssets="all" />
+    <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
+    <ProjectReference Include="../Nuclex.Support/Nuclex.Support.csproj" />
+    <ProjectReference Include="../Nuclex.Input/Nuclex.Input.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Nuclex.UserInterface.Resources.SuaveSkinResources.resx">
+      <LogicalName>Nuclex.UserInterface.Resources.SuaveSkinResources.resources</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Nuclex.UserInterface.Resources.skin.xsd">
+      <LogicalName>Nuclex.UserInterface.Resources.skin.xsd</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RollForward>Major</RollForward>
+    <AssemblyName>AnimationEditor</AssemblyName>
+    <RootNamespace>AnimationTest</RootNamespace>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS0618;CS0612;CS0067;CS0168;CS0169;CS0649;CS0414;CS0219;CS8981</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Content/**/*.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5.1" />
+    <!-- IntermediateSerializer, for the skeleton/animation XML files. -->
+    <PackageReference Include="MonoGame.Framework.Content.Pipeline" Version="3.8.5.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../Libs/Nuclex.Support/Nuclex.Support.csproj" />
+    <ProjectReference Include="../../Libs/Nuclex.Input/Nuclex.Input.csproj" />
+    <ProjectReference Include="../../Libs/Nuclex.UserInterface/Nuclex.UserInterface.csproj" />
+    <ProjectReference Include="../../Libs/SKAnimation/SKAnimation.csproj" />
+    <ProjectReference Include="../../Libs/FarseerPhysicsXNA/FarseerPhysicsXNA.csproj" />
+  </ItemGroup>
+</Project>
