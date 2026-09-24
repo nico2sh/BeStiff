@@ -1,5 +1,21 @@
 # Be Stiff – MonoGame port
 
+Around 2009 I wanted to make a videogame. I decided to learn C# and use XNA which back then was such a cool framework (and still is). My inspiration was Elevator Action and my love for grappling hooks. Then I started to fall into feature creep and never finished a full level or even built a narrative. But I created so many cool things:
+- An inverse kinematics engine for animating the characters
+- An editor for these! So you could add bones, sprites for each, even define limits for rotation o the joints (so they don't look weird if you drop them as ragdolls)
+- Enemies resolving paths across complex maps, including taking elevators to go to a location
+- Coalition of enemies, so a couple of enemies could team up together to search for the hero if they heard a sound
+- Grappling hook of course! with a semi elastic rope so you can swing and the rope can wrap around corners
+- Music! I learned how to use Reaper and I think there is at least one decent tune
+- Explosions in a 2D physics engine, I implemented explosions whose blast radius can be blocked by walls. I implemented that on top of the physics engine I imported
+- Field of view, using HLSL shaders to hide objects behind walls
+
+Anyway, life got in between, and I abandoned the project, and unfortunately the source code got lost. But recently I found an old build! So with the help of Claude, I managed to update the game to MonoGame so I can run it in modern computers and beyond Windows.
+
+<img width="1280" height="720" alt="bestiff_shot4" src="https://github.com/user-attachments/assets/2c4d6683-a147-487a-bad1-2e2c802cc2f5" />
+
+## Short description
+
 Port of the original XNA 4.0 game to MonoGame 3.8.5 (DesktopGL, .NET 8).
 The C# sources were recovered by decompiling the shipped binaries with ILSpy,
 since the original project folder was lost.
