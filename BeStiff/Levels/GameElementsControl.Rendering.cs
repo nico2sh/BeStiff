@@ -21,6 +21,10 @@ namespace Be_Stiff.Levels
 
 		private static EffectParameter grayShadowMap;
 
+		// Background brightness where no light reaches (the original
+		// AlphaShadow overlay used 0.4 + 0.6 * light).
+		private const float BackgroundDarkLevel = 0.4f;
+
 		private static EffectParameter alphaShadowColor;
 
 		private static EffectParameter noisesAlphaMap;
@@ -37,6 +41,7 @@ namespace Be_Stiff.Levels
 			heroDrawMap = heroDrawEffect.Parameters["AlphaMap"];
 			grayShadowEffect.CurrentTechnique = grayShadowEffect.Techniques["GrayShadowMapShader"];
 			grayShadowMap = grayShadowEffect.Parameters["AlphaMap"];
+			grayShadowEffect.Parameters["DarkLevel"].SetValue(BackgroundDarkLevel);
 			alphaShadowColor = alphaShadowEffect.Parameters["ShadowColor"];
 			alphaNoisesEffect.CurrentTechnique = alphaNoisesEffect.Techniques["AlphaNoisesShader"];
 			noisesAlphaMap = alphaNoisesEffect.Parameters["AlphaMap"];
