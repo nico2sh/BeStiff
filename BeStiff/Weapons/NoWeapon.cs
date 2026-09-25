@@ -50,6 +50,9 @@ namespace Be_Stiff.Weapons
 			delayBetweenPunch = MathHelper.Max((float)minDelayBetweenPunch, (float)delay);
 		}
 
+		// Longer than a punch (or a chained double punch) takes.
+		public override double EnemyAttackInterval => 1200.0;
+
 		public NoWeapon(Arm arm, ChildBone otherArm)
 			: base(arm)
 		{

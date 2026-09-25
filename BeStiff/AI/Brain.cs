@@ -73,6 +73,8 @@ namespace Be_Stiff.AI
 
 		private bool hasToShoot;
 
+		private double nextAttackTime;
+
 		private float safeDirection;
 
 		private double startTimeForSafeDirection;
@@ -399,6 +401,7 @@ namespace Be_Stiff.AI
 					if (CanHitHero())
 					{
 						owner.Shoot();
+						nextAttackTime = GameElementsControl.CurrentTimeInMS + owner.WeaponEnemyAttackInterval;
 					}
 					hasToShoot = false;
 				}
@@ -695,7 +698,8 @@ namespace Be_Stiff.AI
 
 		public void ShootAtHero()
 		{
-			if (!hasToShoot && CanHitHero())
+			// Arm early enough that the reaction time ends when the interval does.
+			if (!hasToShoot && GameElementsControl.CurrentTimeInMS + shootReactionTime >= nextAttackTime && CanHitHero())
 			{
 				shootTime = shootReactionTime;
 				hasToShoot = true;

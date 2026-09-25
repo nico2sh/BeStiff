@@ -44,6 +44,8 @@ namespace Be_Stiff.Weapons
 		// who takes Cat2 too: the swing goes over them.
 		public override bool CanHitLyingTarget => false;
 
+		public override double EnemyAttackInterval => 1200.0;
+
 		public Stick(Arm arm)
 			: base(arm)
 		{

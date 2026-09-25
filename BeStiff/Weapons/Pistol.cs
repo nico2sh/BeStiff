@@ -21,6 +21,8 @@ namespace Be_Stiff.Weapons
 
 		protected Human owner;
 
+		public override double EnemyAttackInterval => 1000.0;
+
 		public Pistol(Arm arm, double acc)
 			: base(arm)
 		{

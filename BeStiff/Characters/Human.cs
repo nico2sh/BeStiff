@@ -194,6 +194,8 @@ namespace Be_Stiff.Characters
 
 		public bool WeaponCanHitLyingTarget => weapon[activeWeapon].CanHitLyingTarget;
 
+		public double WeaponEnemyAttackInterval => weapon[activeWeapon].EnemyAttackInterval;
+
 		public void OneSidedIgnore(WorldObject wo)
 		{
 			if (wo == floorWorldObject)

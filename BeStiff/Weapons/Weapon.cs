@@ -40,6 +40,12 @@ namespace Be_Stiff.Weapons
 		/// </summary>
 		public virtual bool CanHitLyingTarget => true;
 
+		/// <summary>
+		/// Minimum time in ms between two attacks by an enemy holding this
+		/// weapon, so the hero has room to fight back.
+		/// </summary>
+		public virtual double EnemyAttackInterval => 1000.0;
+
 		protected Weapon(Arm arm)
 		{
 			ownerArm = arm;
