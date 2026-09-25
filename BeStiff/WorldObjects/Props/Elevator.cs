@@ -68,7 +68,6 @@ namespace Be_Stiff.WorldObjects.Props
 			shadowHull = new ShadowHull[2];
 			Vector2[] path = PathMover.BuildPath(worldScaledOgmoObject);
 			float speed = obj.GetValue<OgmoNumberValue>("speed").Value;
-			bool value = obj.GetValue<OgmoBooleanValue>("Light").Value;
 			mainBody = BodyFactory.CreateBody(GameElementsControl.World);
 			mainBody.BodyType = BodyType.Kinematic;
 			mainBody.Position = worldScaledOgmoObject.Position;
@@ -113,16 +112,9 @@ namespace Be_Stiff.WorldObjects.Props
 			sector = new Sector();
 			sector.Load(base.Name, 2f, 3.5f, mainBody.Position);
 			safeZone = new Zone(mainBody.Position + new Vector2(0.5f, 0f), 1f, 3.5f);
-			if (value)
-			{
-				GameElementsControl.LoadSprite("elevator", "sprites\\objects\\elevator");
-				elevatorSprite = GameElementsControl.GetSprite("elevator");
-			}
-			else
-			{
-				GameElementsControl.LoadSprite("elevatorNoLight", "sprites\\objects\\elevatorNoLight");
-				elevatorSprite = GameElementsControl.GetSprite("elevatorNoLight");
-			}
+			// Every elevator is lit; the levels' "Light" flag is ignored.
+			GameElementsControl.LoadSprite("elevator", "sprites\\objects\\elevator");
+			elevatorSprite = GameElementsControl.GetSprite("elevator");
 			GameElementsControl.LoadSprite("elevatorForeground", "sprites\\objects\\elevatorforeground");
 			elevatorForeGroundSprite = GameElementsControl.GetSprite("elevatorForeground");
 			elevatorLight = new Light2D();
@@ -131,10 +123,7 @@ namespace Be_Stiff.WorldObjects.Props
 			elevatorLight.Color = Color.LightYellow;
 			elevatorLight.Angle = 0f;
 			elevatorLight.Range = 256f;
-			if (value)
-			{
-				GameElementsControl.Krypton.Lights.Add(elevatorLight);
-			}
+			GameElementsControl.Krypton.Lights.Add(elevatorLight);
 			GameElementsControl.ScreenManager.AudioManager.LoadSound("elevatorDing", "audio\\noises\\elevatorDing");
 			GameElementsControl.ScreenManager.AudioManager.LoadSound("elevatorShaft", "audio\\noises\\elevatorShaft");
 			mover = new PathMover(mainBody, path, speed, distanceToDecelerate, timeInStop, "elevatorShaft", startStopped: false);
