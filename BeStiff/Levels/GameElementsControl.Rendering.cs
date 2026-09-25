@@ -69,7 +69,7 @@ namespace Be_Stiff.Levels
 
 		private static void DrawMaskedObjects()
 		{
-			alphaMaskMap.SetValue(krypton.mMap);
+			alphaMaskMap.SetValue(krypton.SightMap);
 			DrawCameraPass(renderTargetObjects, alphaMaskEffect, null);
 		}
 
@@ -88,7 +88,7 @@ namespace Be_Stiff.Levels
 		private static void DrawLineOfSightShadows()
 		{
 			alphaShadowColor.SetValue(hero.ShadowColor.ToVector4());
-			DrawCameraPass(krypton.mMap, alphaShadowEffect, null);
+			DrawCameraPass(krypton.SightMap, alphaShadowEffect, null);
 		}
 
 		private static void SetRenderTargets()
@@ -160,7 +160,7 @@ namespace Be_Stiff.Levels
 			level.DrawGoals();
 			hero.DrawCrossHair();
 			level.DrawFrames();
-			noisesAlphaMap.SetValue(krypton.mMap);
+			noisesAlphaMap.SetValue(krypton.SightMap);
 			noisesObjectsMap.SetValue(renderTargetObjects);
 			noisesHeroMap.SetValue(renderTargetHero);
 			alphaNoisesEffect.CurrentTechnique.Passes[0].Apply();

@@ -279,6 +279,8 @@ namespace Be_Stiff.Characters
 			heroLight.Range = 360f;
 			MustDefend = false;
 			GameElementsControl.Krypton.Lights.Add(heroLight);
+			// Only the hero's light reveals objects and enemies; the others just light.
+			GameElementsControl.Krypton.SightLight = heroLight;
 			GameElementsControl.ScreenManager.AudioManager.LoadSound("heroClimb", "audio\\noises\\hero\\heroClimb");
 			GameElementsControl.ScreenManager.AudioManager.LoadSound("heroDamage", "audio\\noises\\hero\\heroDamage");
 			GameElementsControl.ScreenManager.AudioManager.LoadSound("heroFallDamage", "audio\\noises\\hero\\heroFallDamage");

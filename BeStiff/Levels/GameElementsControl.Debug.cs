@@ -31,6 +31,7 @@ namespace Be_Stiff.Levels
 			var targets = new (string, Microsoft.Xna.Framework.Graphics.Texture2D)[]
 			{
 				("lightmap", krypton != null ? krypton.mMap : null),
+				("sightmap", krypton != null ? krypton.SightMap : null),
 				("hero", renderTargetHero),
 				("objects", renderTargetObjects),
 				("background", renderTargetBackground),

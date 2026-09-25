@@ -30,6 +30,17 @@ namespace Krypton
 		private RenderTarget2D mMapBlur;
 
 		public RenderTarget2D mMap;
+
+		private RenderTarget2D mSightMap;
+
+		/// <summary>
+		/// Light whose map (drawn alone, into SightMap) tells what the viewer
+		/// can see; the other lights only illuminate.
+		/// </summary>
+		public ILight2D SightLight { get; set; }
+
+		/// <summary>Map of SightLight alone, or of every light when unset.</summary>
+		public RenderTarget2D SightMap => (SightLight != null) ? mSightMap : mMap;
 		private int debugFrames;
 
 		// Debug switches (see the game's README), read once instead of per frame.
@@ -179,12 +190,14 @@ namespace Krypton
 			int height = base.GraphicsDevice.Viewport.Height / (int)mLightMapSize;
 			mMap = new RenderTarget2D(base.GraphicsDevice, width, height, mipMap: false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PlatformContents);
 			mMapBlur = new RenderTarget2D(base.GraphicsDevice, width, height, mipMap: false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PlatformContents);
+			mSightMap = new RenderTarget2D(base.GraphicsDevice, width, height, mipMap: false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PlatformContents);
 		}
 
 		private void DisposeRenderTargets()
 		{
 			TryDispose(mMap);
 			TryDispose(mMapBlur);
+			TryDispose(mSightMap);
 		}
 
 		private static void TryDispose(IDisposable obj)
@@ -203,32 +216,45 @@ namespace Krypton
 
 		public void LightMapPrepare()
 		{
-			_ = base.GraphicsDevice.ScissorRectangle.Width;
-			_ = base.GraphicsDevice.ScissorRectangle.Height;
 			Matrix matrix = LightmapMatrixGet();
 			mEffect.Parameters["Matrix"].SetValue(matrix);
 			// MonoGame's effect compiler does not keep the HLSL default values;
 			// without the stretch the shadow hulls cast no projected shadow.
 			mEffect.Parameters["ShadowStrech"].SetValue(1000000f);
 			RenderTargetBinding[] renderTargets = base.GraphicsDevice.GetRenderTargets();
-			base.GraphicsDevice.SetRenderTarget(mMap);
+			debugFrames++;
+			if (SightLight != null)
+			{
+				RenderLightMap(mSightMap, SightLight, matrix, dumpSuffix: "_sight");
+			}
+			RenderLightMap(mMap, null, matrix, dumpSuffix: "");
+			base.GraphicsDevice.SetRenderTargets(renderTargets);
+		}
+
+		/// <summary>Renders the lights (only <paramref name="onlyLight"/> when set) into target.</summary>
+		private void RenderLightMap(RenderTarget2D target, ILight2D onlyLight, Matrix matrix, string dumpSuffix)
+		{
+			base.GraphicsDevice.SetRenderTarget(target);
 			// Alpha 0 everywhere; the shadow pass raises it to 1 behind hulls so the
 			// game's line-of-sight overlay knows what the hero cannot see.
 			base.GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.Stencil, Color.Transparent, 0f, 1);
 			base.GraphicsDevice.RasterizerState = RasterizerStateGetFromCullMode(mCullMode);
-			Vector2 targetSize = new Vector2(mMap.Width, mMap.Height);
-			debugFrames++;
+			Vector2 targetSize = new Vector2(target.Width, target.Height);
 			bool dbg = DebugDump && debugFrames <= 3;
-			if (dbg) System.Console.Error.WriteLine($"Krypton: lights={mLights.Count} hulls={mHulls.Count} bounds={mBounds} map={mMap.Width}x{mMap.Height} ambient={AmbientColor} blur={mBluriness} technique={mEffect.Techniques["PointLight_Shadow_Fast"] != null}");
+			if (dbg) System.Console.Error.WriteLine($"Krypton{dumpSuffix}: lights={mLights.Count} hulls={mHulls.Count} bounds={mBounds} map={target.Width}x{target.Height} ambient={AmbientColor} blur={mBluriness} technique={mEffect.Techniques["PointLight_Shadow_Fast"] != null}");
 			foreach (ILight2D mLight in mLights)
 			{
+				if (onlyLight != null && mLight != onlyLight)
+				{
+					continue;
+				}
 				if (mLight.Bounds.Intersects(mBounds))
 				{
 					base.GraphicsDevice.Clear(ClearOptions.Stencil, Color.Black, 0f, 1);
 					Rectangle scissor = ScissorRectCreateForLight(mLight, matrix, targetSize);
 					if (DebugFlipScissor)
 					{
-						scissor.Y = mMap.Height - scissor.Y - scissor.Height;
+						scissor.Y = target.Height - scissor.Y - scissor.Height;
 					}
 					base.GraphicsDevice.ScissorRectangle = scissor;
 					if (dbg) System.Console.Error.WriteLine($"  light bounds={mLight.Bounds} scissor={base.GraphicsDevice.ScissorRectangle} scissorEnabled={base.GraphicsDevice.RasterizerState.ScissorTestEnable}");
@@ -237,23 +263,23 @@ namespace Krypton
 				else if (dbg) System.Console.Error.WriteLine($"  light SKIPPED bounds={mLight.Bounds}");
 			}
 			string dumpPrefix = DebugDumpPrefix;
-			if (dumpPrefix != null && debugFrames == 60)
+			bool dump = dumpPrefix != null && debugFrames == 60;
+			if (dump)
 			{
-				using (var fs = System.IO.File.Create(dumpPrefix + "_postlight.png")) mMap.SaveAsPng(fs, mMap.Width, mMap.Height);
+				using (var fs = System.IO.File.Create(dumpPrefix + dumpSuffix + "_postlight.png")) target.SaveAsPng(fs, target.Width, target.Height);
 			}
 			if (mBluriness > 0f)
 			{
 				base.GraphicsDevice.SetRenderTarget(mMapBlur);
-				RenderHelper.BlurTextureToTarget(mMap, LightMapSize.Full, BlurTechnique.Horizontal, mBluriness);
-				base.GraphicsDevice.SetRenderTarget(mMap);
+				RenderHelper.BlurTextureToTarget(target, LightMapSize.Full, BlurTechnique.Horizontal, mBluriness);
+				base.GraphicsDevice.SetRenderTarget(target);
 				RenderHelper.BlurTextureToTarget(mMapBlur, LightMapSize.Full, BlurTechnique.Vertical, mBluriness);
-				if (dumpPrefix != null && debugFrames == 60)
+				if (dump)
 				{
-					using (var fs = System.IO.File.Create(dumpPrefix + "_blurH.png")) mMapBlur.SaveAsPng(fs, mMapBlur.Width, mMapBlur.Height);
-					using (var fs = System.IO.File.Create(dumpPrefix + "_postblur.png")) mMap.SaveAsPng(fs, mMap.Width, mMap.Height);
+					using (var fs = System.IO.File.Create(dumpPrefix + dumpSuffix + "_blurH.png")) mMapBlur.SaveAsPng(fs, mMapBlur.Width, mMapBlur.Height);
+					using (var fs = System.IO.File.Create(dumpPrefix + dumpSuffix + "_postblur.png")) target.SaveAsPng(fs, target.Width, target.Height);
 				}
 			}
-			base.GraphicsDevice.SetRenderTargets(renderTargets);
 		}
 
 		private Matrix LightmapMatrixGet()
