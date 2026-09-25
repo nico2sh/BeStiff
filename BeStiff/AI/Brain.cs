@@ -401,7 +401,14 @@ namespace Be_Stiff.AI
 					if (CanHitHero())
 					{
 						owner.Shoot();
-						nextAttackTime = GameElementsControl.CurrentTimeInMS + owner.WeaponEnemyAttackInterval;
+						nextAttackTime = GameElementsControl.CurrentTimeInMS + owner.NextWeaponEnemyAttackInterval();
+						if (GameElementsControl.Random.NextDouble() < owner.WeaponEnemyDoubleAttackChance)
+						{
+							// Second Shoot() chains onto the attack under way; the
+							// longer attack earns one more reaction time of rest.
+							owner.Shoot();
+							nextAttackTime += shootReactionTime;
+						}
 					}
 					hasToShoot = false;
 				}

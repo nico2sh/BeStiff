@@ -194,7 +194,9 @@ namespace Be_Stiff.Characters
 
 		public bool WeaponCanHitLyingTarget => weapon[activeWeapon].CanHitLyingTarget;
 
-		public double WeaponEnemyAttackInterval => weapon[activeWeapon].EnemyAttackInterval;
+		public double NextWeaponEnemyAttackInterval() => weapon[activeWeapon].NextEnemyAttackInterval();
+
+		public double WeaponEnemyDoubleAttackChance => weapon[activeWeapon].EnemyDoubleAttackChance;
 
 		public void OneSidedIgnore(WorldObject wo)
 		{

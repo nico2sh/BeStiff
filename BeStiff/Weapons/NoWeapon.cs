@@ -51,7 +51,12 @@ namespace Be_Stiff.Weapons
 		}
 
 		// Longer than a punch (or a chained double punch) takes.
-		public override double EnemyAttackInterval => 1200.0;
+		public override double NextEnemyAttackInterval()
+		{
+			return 1200.0;
+		}
+
+		public override double EnemyDoubleAttackChance => 0.25;
 
 		public NoWeapon(Arm arm, ChildBone otherArm)
 			: base(arm)

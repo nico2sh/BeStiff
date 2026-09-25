@@ -41,10 +41,20 @@ namespace Be_Stiff.Weapons
 		public virtual bool CanHitLyingTarget => true;
 
 		/// <summary>
-		/// Minimum time in ms between two attacks by an enemy holding this
-		/// weapon, so the hero has room to fight back.
+		/// Time in ms an enemy holding this weapon waits after an attack
+		/// before the next one, so the hero has room to fight back. Called
+		/// once per attack, so it may vary.
 		/// </summary>
-		public virtual double EnemyAttackInterval => 1000.0;
+		public virtual double NextEnemyAttackInterval()
+		{
+			return 1000.0;
+		}
+
+		/// <summary>
+		/// Chance (0-1) that an enemy's attack is a double one: a second
+		/// Shoot() while the first is under way, for weapons that chain.
+		/// </summary>
+		public virtual double EnemyDoubleAttackChance => 0.0;
 
 		protected Weapon(Arm arm)
 		{
