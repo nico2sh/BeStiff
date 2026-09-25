@@ -40,12 +40,19 @@ namespace Be_Stiff.Weapons
 
 		public GameSprite UISprite => uiSprite;
 
+		// Ignoring Cat2 (other enemies) also skips a lying or sliding hero,
+		// who takes Cat2 too: the swing goes over them.
+		public override bool CanHitLyingTarget => false;
+
 		public Stick(Arm arm)
 			: base(arm)
 		{
 			base.WeaponType = WeaponType.Other;
 			mainSkeleton = arm.GetMainSkeleton();
-			weaponRange = 2f;
+			// Keep the AI's attack range inside the swing's reach (hand, 0.65
+			// from the shoulder per skeleton scale, plus the hit box's 0.65):
+			// the half-size legacy skeleton only reaches about 1.5.
+			weaponRange = GameElementsControl.IsLegacyLevel ? 1.4f : 2f;
 			hittingObjects = new HittingObjects();
 		}
 
@@ -112,6 +119,12 @@ namespace Be_Stiff.Weapons
 			Vector2 vector3 = vector2 * 40f;
 			hittingObjects.Hit(vector3, aabb.Center, HitType.Kick);
 			hittingObjects.ApplyLinearImpulse(vector3 / 2f);
+			if (DebugFlags.HitLog)
+			{
+				Hero hero = GameElementsControl.Hero;
+				Vector2 heroCenter = hero.GetCenterPosition();
+				Console.Error.WriteLine($"stick {ownerName} t={GameElementsControl.CurrentTimeInMS:F0} shoulder={ownerArm.Position} hand={vector} box={aabb.LowerBound}..{aabb.UpperBound} hero={heroCenter} reach={(vector - ownerArm.Position).Length():F2} heroDist={(heroCenter - ownerArm.Position).Length():F2} lied={hero.IsLied()} hits={hittingObjects.NumObjects}");
+			}
 			if (hittingObjects.NumObjects > 0)
 			{
 				hitSmoke.Trigger(ownerArm.HandPosition());

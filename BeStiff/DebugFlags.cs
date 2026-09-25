@@ -30,6 +30,8 @@ namespace Be_Stiff
 
 		public static readonly bool GirderLog = IsSet("BESTIFF_GIRDER_LOG");
 
+		public static readonly bool HitLog = IsSet("BESTIFF_HIT_LOG");
+
 		public static readonly int JumpFrame = GetInt("BESTIFF_JUMP_FRAME") ?? 0;
 
 		public static readonly int KillFrame = GetInt("BESTIFF_KILL_FRAME") ?? 0;

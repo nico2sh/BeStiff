@@ -34,6 +34,12 @@ namespace Be_Stiff.Weapons
 			}
 		}
 
+		/// <summary>
+		/// False for weapons that swing over a lying or sliding target (the
+		/// target dodges by ducking), so the AI does not attack one.
+		/// </summary>
+		public virtual bool CanHitLyingTarget => true;
+
 		protected Weapon(Arm arm)
 		{
 			ownerArm = arm;

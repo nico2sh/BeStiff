@@ -394,7 +394,12 @@ namespace Be_Stiff.AI
 				shootTime -= GameElementsControl.LastFrameTimeInMS;
 				if (shootTime <= 0.0)
 				{
-					owner.Shoot();
+					// The hero may have moved away or ducked during the
+					// reaction time: check again instead of swinging at air.
+					if (CanHitHero())
+					{
+						owner.Shoot();
+					}
 					hasToShoot = false;
 				}
 			}
@@ -682,9 +687,15 @@ namespace Be_Stiff.AI
 			brainStates[currentBrainState].Init();
 		}
 
+		private bool CanHitHero()
+		{
+			Hero hero = GameElementsControl.Hero;
+			return aimingAtHero && !hero.IsDead() && (owner.WeaponCanHitLyingTarget || !hero.IsLied());
+		}
+
 		public void ShootAtHero()
 		{
-			if (!hasToShoot)
+			if (!hasToShoot && CanHitHero())
 			{
 				shootTime = shootReactionTime;
 				hasToShoot = true;

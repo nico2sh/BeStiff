@@ -192,6 +192,8 @@ namespace Be_Stiff.Characters
 
 		public float WeaponRange => weapon[activeWeapon].WeaponRange;
 
+		public bool WeaponCanHitLyingTarget => weapon[activeWeapon].CanHitLyingTarget;
+
 		public void OneSidedIgnore(WorldObject wo)
 		{
 			if (wo == floorWorldObject)
