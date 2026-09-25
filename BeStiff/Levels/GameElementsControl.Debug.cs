@@ -32,6 +32,8 @@ namespace Be_Stiff.Levels
 			{
 				("lightmap", krypton != null ? krypton.mMap : null),
 				("sightmap", krypton != null ? krypton.SightMap : null),
+				("viewmask", krypton != null ? krypton.ViewMaskMap : null),
+				("scene", renderTargetScene),
 				("hero", renderTargetHero),
 				("objects", renderTargetObjects),
 				("background", renderTargetBackground),

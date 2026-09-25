@@ -166,6 +166,7 @@ Debug switches (environment variables; "set" means any value):
 | `BESTIFF_DEATH_LOG` | Log the dead hero's body state every 10 physics frames |
 | `BESTIFF_PERF` | Frame profiler: logs frames over 25 ms (split into update / draw steps / present wait), garbage collections, content loaded from disk, and a summary every 300 frames (allocation per frame, heap size) |
 | `BESTIFF_STATE_LOG` | Log every hero state change (time, state names, body rotation, position, energy) |
+| `BESTIFF_VIEW_BLUR` | Turn the "View Blur" option on regardless of the saved options |
 | `BESTIFF_HIT_LOG` | Log every stick swing's hit test: shoulder, hand, hit box, hero position, reach, hits |
 | `BESTIFF_GIRDER_LOG` | Log every girder's body and rope state every 15 physics frames |
 | `BESTIFF_KRYPTON_DUMP=<prefix>` | Save the Krypton light map at frame 60 as `<prefix>_postlight.png`, `_blurH.png`, `_postblur.png` |

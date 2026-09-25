@@ -47,7 +47,8 @@ namespace Be_Stiff
 
 		public static bool OptionFullScreen = false;
 
-		public static int OptionCurrentScreenResolution = 0;
+		// Blur what lies outside the hero's light (see GameElementsControl.Rendering).
+		public static bool OptionViewBlur = false;
 
 		public static int OptionSoundVolume = 10;
 
@@ -197,7 +198,7 @@ namespace Be_Stiff
 							}
 							else
 							{
-								OptionCurrentScreenResolution = int.Parse(streamReader.ReadLine());
+								streamReader.ReadLine(); // former aspect ratio option
 								OptionFullScreen = bool.Parse(streamReader.ReadLine());
 								OptionSoundVolume = int.Parse(streamReader.ReadLine());
 								OptionMusicVolume = int.Parse(streamReader.ReadLine());
@@ -237,6 +238,11 @@ namespace Be_Stiff
 								InputMouseButtonKick = (MouseButtons)Enum.Parse(typeof(MouseButtons), streamReader.ReadLine(), ignoreCase: true);
 								InputMouseButtonShoot = (MouseButtons)Enum.Parse(typeof(MouseButtons), streamReader.ReadLine(), ignoreCase: true);
 								InputMouseButtonSecShoot = (MouseButtons)Enum.Parse(typeof(MouseButtons), streamReader.ReadLine(), ignoreCase: true);
+								// Files saved before the graphics options end here.
+								if (streamReader.ReadLine() == "==Graphics==")
+								{
+									OptionViewBlur = bool.Parse(streamReader.ReadLine());
+								}
 							}
 						}
 					});
@@ -264,7 +270,7 @@ namespace Be_Stiff
 					using (StreamWriter streamWriter = new StreamWriter(stream))
 					{
 						streamWriter.WriteLine(GameVersion);
-						streamWriter.WriteLine(OptionCurrentScreenResolution);
+						streamWriter.WriteLine(0); // former aspect ratio option, kept for the file layout
 						streamWriter.WriteLine(OptionFullScreen);
 						streamWriter.WriteLine(OptionSoundVolume);
 						streamWriter.WriteLine(OptionMusicVolume);
@@ -304,6 +310,8 @@ namespace Be_Stiff
 						streamWriter.WriteLine(Enum.GetName(typeof(MouseButtons), InputMouseButtonKick));
 						streamWriter.WriteLine(Enum.GetName(typeof(MouseButtons), InputMouseButtonShoot));
 						streamWriter.WriteLine(Enum.GetName(typeof(MouseButtons), InputMouseButtonSecShoot));
+						streamWriter.WriteLine("==Graphics==");
+						streamWriter.WriteLine(OptionViewBlur);
 					}
 				});
 			}

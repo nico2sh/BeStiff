@@ -33,6 +33,15 @@ namespace Be_Stiff.Levels
 
 		private static EffectParameter noisesHeroMap;
 
+		private static EffectParameter viewBlurMask;
+
+		// Blur, in pixels, of what lies outside the hero's light (its own
+		// shape, not the shadowed line of sight).
+		private const float OutOfViewBlurPixels = 2.5f;
+
+		// Light-shape brightness from which the view is fully sharp.
+		private const float ViewSharpLevel = 0.3f;
+
 		private static void CacheEffectParameters()
 		{
 			alphaMaskEffect.CurrentTechnique = alphaMaskEffect.Techniques["AlphaMapShader"];
@@ -47,6 +56,10 @@ namespace Be_Stiff.Levels
 			noisesAlphaMap = alphaNoisesEffect.Parameters["AlphaMap"];
 			noisesObjectsMap = alphaNoisesEffect.Parameters["ObjectsMap"];
 			noisesHeroMap = alphaNoisesEffect.Parameters["HeroMap"];
+			viewBlurEffect.CurrentTechnique = viewBlurEffect.Techniques["ViewBlurShader"];
+			viewBlurMask = viewBlurEffect.Parameters["ViewMask"];
+			viewBlurEffect.Parameters["BlurRadius"].SetValue(new Vector2(OutOfViewBlurPixels / renderTargetScene.Width, OutOfViewBlurPixels / renderTargetScene.Height));
+			viewBlurEffect.Parameters["SharpLevel"].SetValue(ViewSharpLevel);
 		}
 
 		/// <summary>Draws a screen-sized texture over the camera view.</summary>
@@ -89,6 +102,21 @@ namespace Be_Stiff.Levels
 		{
 			alphaShadowColor.SetValue(hero.ShadowColor.ToVector4());
 			DrawCameraPass(krypton.SightMap, alphaShadowEffect, null);
+		}
+
+		/// <summary>
+		/// Puts the world on the back buffer, blurred outside the hero's light
+		/// shape (the view mask).
+		/// </summary>
+		private static void DrawSceneWithViewBlur()
+		{
+			ScreenManager.GraphicsDevice.SetRenderTarget(null);
+			ScreenManager.GraphicsDevice.Clear(Color.Transparent);
+			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, (DepthStencilState)null, (RasterizerState)null, (Effect)null);
+			viewBlurMask.SetValue(krypton.ViewMaskMap);
+			viewBlurEffect.CurrentTechnique.Passes[0].Apply();
+			ScreenManager.SpriteBatch.Draw(renderTargetScene, Vector2.Zero, Color.White);
+			ScreenManager.SpriteBatch.End();
 		}
 
 		private static void SetRenderTargets()
@@ -135,11 +163,16 @@ namespace Be_Stiff.Levels
 		public static void Draw()
 		{
 			krypton.Matrix = Camera.View;
+			krypton.ViewMaskEnabled = Globals.OptionViewBlur || DebugFlags.ViewBlur;
 			FramePerf.Mark(null);
 			krypton.LightMapPrepare();
 			FramePerf.Mark("lights");
 			SetRenderTargets();
 			FramePerf.Mark("targets");
+			// With the view blur the world goes to a target first, to blur what
+			// lies outside the view; otherwise straight to the back buffer.
+			bool viewBlur = krypton.ViewMaskMap != null;
+			ScreenManager.GraphicsDevice.SetRenderTarget(viewBlur ? renderTargetScene : null);
 			// Switching render targets doesn't preserve the back buffer, so clear it here.
 			ScreenManager.GraphicsDevice.Clear(Color.Transparent);
 			DrawBackground();
@@ -160,13 +193,22 @@ namespace Be_Stiff.Levels
 			level.DrawGoals();
 			hero.DrawCrossHair();
 			level.DrawFrames();
+			ScreenManager.SpriteBatch.End();
+			FramePerf.Mark("overlay");
+			if (viewBlur)
+			{
+				DrawSceneWithViewBlur();
+				FramePerf.Mark("viewblur");
+			}
+			// Noise texts go over the view blur so they stay crisp.
+			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap, (DepthStencilState)null, (RasterizerState)null, (Effect)null, Camera.View);
 			noisesAlphaMap.SetValue(krypton.SightMap);
 			noisesObjectsMap.SetValue(renderTargetObjects);
 			noisesHeroMap.SetValue(renderTargetHero);
 			alphaNoisesEffect.CurrentTechnique.Passes[0].Apply();
 			DrawCameraQuad(renderTargetNoises);
 			ScreenManager.SpriteBatch.End();
-			FramePerf.Mark("overlay");
+			FramePerf.Mark("noises");
 			ScreenManager.SpriteBatch.Begin();
 			userInterface.Draw();
 			ScreenManager.SpriteBatch.End();

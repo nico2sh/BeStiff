@@ -62,6 +62,8 @@ namespace Be_Stiff.Levels
 
 		private static RenderTarget2D renderTargetHero;
 
+		private static RenderTarget2D renderTargetScene;
+
 		private static double inGameTimeInMs;
 
 		private static double lastFrameGameTimeInMs;
@@ -99,6 +101,8 @@ namespace Be_Stiff.Levels
 		private static Effect alphaShadowEffect;
 
 		private static Effect grayShadowEffect;
+
+		private static Effect viewBlurEffect;
 
 		private static Effect alphaNoisesEffect;
 
@@ -218,6 +222,7 @@ namespace Be_Stiff.Levels
 			renderTargetBackground = new RenderTarget2D(ScreenManager.GraphicsDevice, presentationParameters.BackBufferWidth, presentationParameters.BackBufferHeight);
 			renderTargetNoises = new RenderTarget2D(ScreenManager.GraphicsDevice, presentationParameters.BackBufferWidth, presentationParameters.BackBufferHeight);
 			renderTargetHero = new RenderTarget2D(ScreenManager.GraphicsDevice, presentationParameters.BackBufferWidth, presentationParameters.BackBufferHeight);
+			renderTargetScene = new RenderTarget2D(ScreenManager.GraphicsDevice, presentationParameters.BackBufferWidth, presentationParameters.BackBufferHeight);
 			noiseManager = new NoiseManager(ScreenManager.AudioManager);
 			userInterface = new UserInterface();
 			userInterface.Load();
@@ -248,6 +253,7 @@ namespace Be_Stiff.Levels
 			grayShadowEffect = GameScreen.Content.Load<Effect>("effects\\grayshadow");
 			alphaNoisesEffect = GameScreen.Content.Load<Effect>("effects\\alphanoises");
 			heroDrawEffect = GameScreen.Content.Load<Effect>("effects\\herodraw");
+			viewBlurEffect = GameScreen.Content.Load<Effect>("effects\\viewblur");
 			CacheEffectParameters();
 		}
 

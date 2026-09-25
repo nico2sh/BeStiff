@@ -67,6 +67,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/AlphaNoises.fx
 
+#begin Effects/ViewBlur.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/ViewBlur.fx
+
 #begin Effects/Krypton/KryptonEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor

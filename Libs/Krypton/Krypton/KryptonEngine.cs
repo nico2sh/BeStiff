@@ -41,6 +41,19 @@ namespace Krypton
 
 		/// <summary>Map of SightLight alone, or of every light when unset.</summary>
 		public RenderTarget2D SightMap => (SightLight != null) ? mSightMap : mMap;
+
+		private RenderTarget2D mViewMaskMap;
+
+		private static readonly List<ShadowHull> NoHulls = new List<ShadowHull>();
+
+		/// <summary>
+		/// SightLight's own shape (texture and field of view) with no hull
+		/// shadows; null when SightLight is unset.
+		/// </summary>
+		public RenderTarget2D ViewMaskMap => (SightLight != null && ViewMaskEnabled) ? mViewMaskMap : null;
+
+		/// <summary>Whether ViewMaskMap is rendered at all.</summary>
+		public bool ViewMaskEnabled { get; set; }
 		private int debugFrames;
 
 		// Debug switches (see the game's README), read once instead of per frame.
@@ -191,6 +204,7 @@ namespace Krypton
 			mMap = new RenderTarget2D(base.GraphicsDevice, width, height, mipMap: false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PlatformContents);
 			mMapBlur = new RenderTarget2D(base.GraphicsDevice, width, height, mipMap: false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PlatformContents);
 			mSightMap = new RenderTarget2D(base.GraphicsDevice, width, height, mipMap: false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PlatformContents);
+			mViewMaskMap = new RenderTarget2D(base.GraphicsDevice, width, height, mipMap: false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PlatformContents);
 		}
 
 		private void DisposeRenderTargets()
@@ -198,6 +212,7 @@ namespace Krypton
 			TryDispose(mMap);
 			TryDispose(mMapBlur);
 			TryDispose(mSightMap);
+			TryDispose(mViewMaskMap);
 		}
 
 		private static void TryDispose(IDisposable obj)
@@ -225,14 +240,18 @@ namespace Krypton
 			debugFrames++;
 			if (SightLight != null)
 			{
-				RenderLightMap(mSightMap, SightLight, matrix, dumpSuffix: "_sight");
+				RenderLightMap(mSightMap, SightLight, mHulls, matrix, dumpSuffix: "_sight");
+				if (ViewMaskEnabled)
+				{
+					RenderLightMap(mViewMaskMap, SightLight, NoHulls, matrix, dumpSuffix: "_viewmask");
+				}
 			}
-			RenderLightMap(mMap, null, matrix, dumpSuffix: "");
+			RenderLightMap(mMap, null, mHulls, matrix, dumpSuffix: "");
 			base.GraphicsDevice.SetRenderTargets(renderTargets);
 		}
 
-		/// <summary>Renders the lights (only <paramref name="onlyLight"/> when set) into target.</summary>
-		private void RenderLightMap(RenderTarget2D target, ILight2D onlyLight, Matrix matrix, string dumpSuffix)
+		/// <summary>Renders the lights (only <paramref name="onlyLight"/> when set) into target, shadowed by hulls.</summary>
+		private void RenderLightMap(RenderTarget2D target, ILight2D onlyLight, List<ShadowHull> hulls, Matrix matrix, string dumpSuffix)
 		{
 			base.GraphicsDevice.SetRenderTarget(target);
 			// Alpha 0 everywhere; the shadow pass raises it to 1 behind hulls so the
@@ -241,7 +260,7 @@ namespace Krypton
 			base.GraphicsDevice.RasterizerState = RasterizerStateGetFromCullMode(mCullMode);
 			Vector2 targetSize = new Vector2(target.Width, target.Height);
 			bool dbg = DebugDump && debugFrames <= 3;
-			if (dbg) System.Console.Error.WriteLine($"Krypton{dumpSuffix}: lights={mLights.Count} hulls={mHulls.Count} bounds={mBounds} map={target.Width}x{target.Height} ambient={AmbientColor} blur={mBluriness} technique={mEffect.Techniques["PointLight_Shadow_Fast"] != null}");
+			if (dbg) System.Console.Error.WriteLine($"Krypton{dumpSuffix}: lights={mLights.Count} hulls={hulls.Count} bounds={mBounds} map={target.Width}x{target.Height} ambient={AmbientColor} blur={mBluriness} technique={mEffect.Techniques["PointLight_Shadow_Fast"] != null}");
 			foreach (ILight2D mLight in mLights)
 			{
 				if (onlyLight != null && mLight != onlyLight)
@@ -258,7 +277,7 @@ namespace Krypton
 					}
 					base.GraphicsDevice.ScissorRectangle = scissor;
 					if (dbg) System.Console.Error.WriteLine($"  light bounds={mLight.Bounds} scissor={base.GraphicsDevice.ScissorRectangle} scissorEnabled={base.GraphicsDevice.RasterizerState.ScissorTestEnable}");
-					mLight.Draw(RenderHelper, mHulls);
+					mLight.Draw(RenderHelper, hulls);
 				}
 				else if (dbg) System.Console.Error.WriteLine($"  light SKIPPED bounds={mLight.Bounds}");
 			}
